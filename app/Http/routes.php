@@ -11,6 +11,5 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::controller('/login', 'LoginController');
+Route::controller('/dashboard', 'DashboardController');
