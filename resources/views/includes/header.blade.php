@@ -1,14 +1,14 @@
 <div id="topbar">
-	<a id="homebtnid" class="topbtn selectedtab" title="home">
+	<a href="/dashboard" id="homebtnid" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('dashboard') }}" title="home">
 		<span class="glyphicon glyphicon-home"></span>
 	</a>
-	<a href="notifications.php" class="topbtn" title="notifications">
+	<a href="/notifications" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('notifications') }}" title="notifications">
 		<span class="glyphicon glyphicon-bell"></span>
 	</a>
-	<a href="messages.php" class="topbtn" title="messages">
+	<a href="messages.php" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('messages') }}" title="messages">
 		<span class="glyphicon glyphicon-envelope"></span>
 	</a>
-	<a href="myprofile.php" class="topbtn" title="messages">
+	<a href="myprofile.php" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('profile') }}" title="profile">
 		<span class="glyphicon glyphicon-cog"></span>
 	</a>
 	<a href="/logout" class="logout topbtn pushright" title="logout">

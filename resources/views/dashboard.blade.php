@@ -235,5 +235,6 @@ function closecomment() {
 function emptythebox() {
 	$("#textcommentbox").val('')
 }
+runallthis();
 </script>
 @stop

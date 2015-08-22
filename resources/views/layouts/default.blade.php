@@ -6,8 +6,7 @@
 	@show
 </head>
 
-<body onLoad="runallthis()">
-	
+<body>
 	@section('header')
 		@include('includes.header')
 	@show
