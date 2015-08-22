@@ -19,3 +19,4 @@ Route::post('/login', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
 Route::controller('/dashboard', 'DashboardController');
 Route::controller('/notifications', 'NotificationsController');
+Route::controller('/messages', 'MessagesController');

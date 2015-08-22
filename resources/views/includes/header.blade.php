@@ -5,7 +5,7 @@
 	<a href="/notifications" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('notifications') }}" title="notifications">
 		<span class="glyphicon glyphicon-bell"></span>
 	</a>
-	<a href="messages.php" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('messages') }}" title="messages">
+	<a href="/messages" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('messages') }}" title="messages">
 		<span class="glyphicon glyphicon-envelope"></span>
 	</a>
 	<a href="myprofile.php" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('profile') }}" title="profile">
