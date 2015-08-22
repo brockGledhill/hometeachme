@@ -8,7 +8,7 @@
 	<a href="/messages" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('messages') }}" title="messages">
 		<span class="glyphicon glyphicon-envelope"></span>
 	</a>
-	<a href="myprofile.php" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('profile') }}" title="profile">
+	<a href="/profile" class="topbtn {{ \App\Http\Helpers\ViewHelper::setActive('profile') }}" title="profile">
 		<span class="glyphicon glyphicon-cog"></span>
 	</a>
 	<a href="/logout" class="logout topbtn pushright" title="logout">

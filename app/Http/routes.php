@@ -20,3 +20,4 @@ Route::get('/logout', 'Auth\AuthController@getLogout');
 Route::controller('/dashboard', 'DashboardController');
 Route::controller('/notifications', 'NotificationsController');
 Route::controller('/messages', 'MessagesController');
+Route::controller('/profile', 'ProfileController');
