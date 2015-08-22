@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
 
 class Handler extends ExceptionHandler
 {
@@ -45,7 +46,13 @@ class Handler extends ExceptionHandler
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
+		if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+			if (Auth::check()) {
+                return response()->view('errors.404', [], 404);
+			}
+			return \Illuminate\Support\Facades\Redirect::to('/login');
+		}
 
-        return parent::render($request, $e);
+		return parent::render($request, $e);
     }
 }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{{ $title }}}</title>
+<title>Login</title>
 <link href="/css/style.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 <link href='https://fonts.googleapis.com/css?family=Exo+2:400,100' rel='stylesheet' type='text/css'>
@@ -19,6 +19,7 @@
 			{!! csrf_field() !!}
 			<input name="email" type="text" placeholder="email" />
 			<input name="password" type="password" placeholder="password" />
+			<input name="remember" type="hidden" value="0" />
 
 			<button type="submit" title="login">Login</button>
 

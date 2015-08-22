@@ -101,6 +101,9 @@ body {
 .monthlabel {
   float: left; }
 
+.home-taught-month {
+  color: #5dc0b2; }
+
 .monthitem {
   border-bottom: 1px solid #CCCCCC;
   height: 45px;
@@ -132,6 +135,9 @@ body {
   text-align: center;
   display: none;
   padding: 5px; }
+
+.commentbutton--show {
+  display: block; }
 
 .topbtn {
   color: #FFFFFF;
@@ -535,27 +541,29 @@ h4 {
 
 .savecommentbtn {
   background-color: #69d8c7;
-  padding: 15px;
-  margin-top: 25px;
-  display: block;
-  text-align: center;
   border-radius: 5px;
   color: #FFFFFF;
-  font-size: 16px;
+  cursor: pointer;
+  display: block;
   float: right;
+  font-size: 16px;
+  margin-top: 25px;
+  padding: 15px;
+  text-align: center;
   width: 48%; }
 
 .closecommentbtn {
-  float: left;
-  width: 40%;
   background-color: #fe635f;
-  padding: 15px;
-  margin-top: 25px;
-  display: block;
-  text-align: center;
   border-radius: 5px;
   color: #FFFFFF;
-  font-size: 16px; }
+  cursor: pointer;
+  display: block;
+  float: left;
+  font-size: 16px;
+  margin-top: 25px;
+  padding: 15px;
+  text-align: center;
+  width: 40%; }
 
 #commenttitle {
   color: #999999;

@@ -20,11 +20,17 @@ body{width: 100%; height: 100%; margin:0; padding: 0; background-color: #f3f1e2 
 .glyphicon-unchecked{color: #814f75; font-size:20px;}
 .visiticon{ margin-left: 5px; margin-right: 8px; float:left;}
 .monthlabel{float:left;}
+.home-taught-month {
+  color: #5dc0b2;
+}
 .monthitem{ border-bottom: 1px solid #CCCCCC; height: 45px; font-size: 15px; padding-top: 6px; color: #CCCCCC; padding-left: 10px; cursor:pointer;}
 .visitstitle{width: 100%;display: block;}
 .selectedtab{background-image: url(/images/selectarrow.png);}
 .visitclickitem{float:left; width: 38%; padding-top: 5px;}
 .commentbutton{float: right; color: #804d76; border: 1px solid #804d76; border-radius: 4px;font-size: 13px; width: 120px;text-align: center; display:none; padding: 5px;}
+.commentbutton--show {
+  display: block;
+}
 
 .topbtn{color: #FFFFFF; width: 65px; height: 50px; font-size: 20px; text-align:center; padding-top: 10px; display:block; float:left;}
 #topbar{ background-color: #69d8c7; height: 50px; width: 100%; overflow:hidden; clear:both;}
@@ -97,8 +103,32 @@ h4{padding-bottom: 20px; color: #814f75 !important;}
 .compnameclass{float: right; color: #814f75; padding-top: 5px;}
 .leftheader{float: left;}
 .htericon{display:block; float:left; color: #814f75; font-size: 18px; padding-top: 5px;}
-.savecommentbtn{background-color: #69d8c7;padding: 15px;margin-top: 25px;display: block;text-align: center;border-radius: 5px;color: #FFFFFF;font-size: 16px; float:right; width: 48%;}
-.closecommentbtn{ float:left; width: 40%; background-color: #fe635f;padding: 15px;margin-top: 25px;display: block;text-align: center;border-radius: 5px;color: #FFFFFF;font-size: 16px;}
+.savecommentbtn{
+  background-color: #69d8c7;
+  border-radius: 5px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: block;
+  float: right;
+  font-size: 16px;
+  margin-top: 25px;
+  padding: 15px;
+  text-align: center;
+  width: 48%;
+}
+.closecommentbtn{
+  background-color:#fe635f;
+  border-radius: 5px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: block;
+  float:left;
+  font-size: 16px;
+  margin-top: 25px;
+  padding: 15px;
+  text-align: center;
+  width: 40%;
+}
 #commenttitle{color:#999999; font-size: 18px;padding-bottom: 10px;float: left; font-family: 'Exo 2', sans-serif;}
 .companphone{float:right; text-align: right; padding: 0;margin: 0;margin-bottom: 20px;}
 .myselect{width: 130px;}
@@ -176,4 +206,3 @@ a:focus, a:hover {
 	#visitschart{width: 100%;}
 	.commentcont{width: 80%;}
 }
-

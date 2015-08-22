@@ -1,51 +1,82 @@
 <?php
-namespace App\Http\Controllers;
 
+namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
+use App\WardComments;
+use App\WardCompanions;
+use App\WardCompanionshipMembers;
+use App\WardCompanionshipVisits;
+use App\WardMember;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller {
+	public function __construct() {
+		$this->middleware('auth');
+	}
+
 	public function getIndex() {
 		$data = [];
 		$data['title'] = 'Dashboard';
-		
-		/*mysql_connect("ssiuxtools.db.11473969.hostedresource.com", "ssiuxtools", "D!ngd0ng");
-		mysql_select_db("ssiuxtools");
 
-		if (!isset($_SESSION['ward_logins']['emailaddress'])) {
-			$loginuser = mysql_real_escape_string($_POST['myusername']);
-			$loginpassword = mysql_real_escape_string($_POST['mypassword']);
-			$query = mysql_query("SELECT * FROM `ward_members` WHERE `Email`= '$loginuser' AND `Password`= '$loginpassword' ");
-			$row = mysql_fetch_array($query);
-			if ($row['MemberID']) {
-				$_SESSION['ward_logins']['emailaddress'] = $row['Email'];
-				$_SESSION['ward_logins']['WardID'] = $row['WardID'];
-				$_SESSION['ward_logins']['QuorumID'] = $row['QuorumID'];
-				$_SESSION['ward_logins']['MemberID'] = $row['MemberID'];
-				$_SESSION['ward_logins']['Is_Admin'] = $row['Is_Admin'];
-				//echo 'admin' . $row['Is_Admin'];
-				$thename = $row['First_Name'] ." ". $row['Last_Name'];
-				//echo $_SESSION['ward_logins']['emailaddress'];
+		$authUser = Auth::user();
+
+		$data['authId'] = $authUser->id;
+		$data['wardId'] = $authUser->ward_id;
+
+		$wardCompanion = WardCompanions::where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId'])->first();
+
+		if (!empty($wardCompanion) && $wardCompanion->ht_one_id == $data['authId']) {
+			$data['companion'] = WardMember::find($wardCompanion->ht_two_id);
+		} else {
+			$data['companion'] = WardMember::find($wardCompanion->ht_one_id);
+		}
+		if (!empty($data['companion'])) {
+			$data['companionName'] = $data['companion']->first_name . ' ' . $data['companion']->last_name;
+			$data['companionPhone'] = $data['companion']->phone;
+		}
+
+		$data['allFamilies'] = WardCompanionshipMembers::where('companionship_id', '=', $data['authId'])->get();
+		$data['numFamilies'] = count($data['allFamilies']);
+		$data['totalVisitCount'] = 0;
+		if ($data['numFamilies'] > 0) {
+			foreach ($data['allFamilies'] as $key => $family) {
+				$familyData = &$data['myFamilies'][$key];
+				$familyData['family'] = WardMember::find($family['member_id']);
+				$familyData['visitMonth'] = [];
+				$visits = WardCompanionshipVisits::where('member_id', '=', $family['member_id'])->where('visit_year', '=', date('Y'))->get();
+				foreach ($visits as $visit) {
+					$familyData['visitMonth'] = $visit['visit_month'];
+				}
+				$familyData['visitCount'] = count($visits);
+				$data['totalVisitCount'] += $familyData['visitCount'];
+				$familyData['comments'] = WardComments::where('member_id', '=', $data['authId'])->where('family_id', '=', $family['member_id'])->get();
 			}
-			else {
-				header("Location: index.php?cmd=logout");
+		}
+
+		$data['months'] = [
+			'Jan' => 'January',
+			'Feb' => 'February',
+			'Mar' => 'March',
+			'Apr' => 'April',
+			'May' => 'May',
+			'Jun' => 'June',
+			'Jul' => 'July',
+			'Aug' => 'August',
+			'Sep' => 'September',
+			'Oct' => 'October',
+			'Nov' => 'November',
+			'Dec' => 'December'
+		];
+
+		$data['myHomeTeachers'] = WardCompanionshipMembers::where('member_id', '=', $data['authId'])->get();
+		$data['numHomeTeachers'] = count($data['myHomeTeachers']);
+		if ($data['numHomeTeachers'] > 0) {
+			foreach ($data['myHomeTeachers'] as $key => $homeTeacher) {
+				$homeTeacherData = &$data['myHomeTeacherFamily'][$key];
+				$homeTeacherData['family'] = WardMember::find($homeTeacher['member_id']);
 			}
-		}*/
-
-		$thename;
-		$theid;
-		$numfams = 0;
-		$thecompanionid;
-		$mycompanionsid;
-		$mycompanionsname;
-		$dayear = date('Y');
-		$explodename = explode(" ", $thename);
-		$theid = $_SESSION['ward_logins']['MemberID'];
-		$adminstatus = $_SESSION['ward_logins']['Is_Admin'];
-		$myward = $_SESSION['ward_logins']['WardID'];
-		$allfamilies = array();
-		$topcomp;
-
-		$queryfamily = mysql_query("SELECT * FROM `ward_compans` WHERE `HtOneID`='$theid' OR `HtTwoID`='$theid' ");
+		}
 
 		return view('dashboard', $data);
 	}
