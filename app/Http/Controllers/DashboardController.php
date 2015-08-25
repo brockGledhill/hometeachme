@@ -44,7 +44,7 @@ class DashboardController extends Controller {
 				$familyData['visitMonth'] = [];
 				$visits = WardCompanionshipVisits::where('member_id', '=', $family['member_id'])->where('visit_year', '=', date('Y'))->get();
 				foreach ($visits as $visit) {
-					$familyData['visitMonth'] = $visit['visit_month'];
+					$familyData['visitMonth'][] = $visit['visit_month'];
 				}
 				$familyData['visitCount'] = count($visits);
 				$data['totalVisitCount'] += $familyData['visitCount'];

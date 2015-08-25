@@ -17,7 +17,10 @@ Route::any('/', function() {
 Route::get('/login', 'Auth\AuthController@getLogin');
 Route::post('/login', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
+
 Route::controller('/dashboard', 'DashboardController');
 Route::controller('/notifications', 'NotificationsController');
 Route::controller('/messages', 'MessagesController');
 Route::controller('/profile', 'ProfileController');
+Route::controller('/visit', 'VisitController');
+Route::controller('/comment', 'CommentController');

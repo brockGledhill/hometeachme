@@ -39,11 +39,13 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
 	}
 
 	/**
-	 * Update an existing ward member
+	 * Save a new, or update an existing ward member (singular)
 	 *
 	 * @param array $attributes
+	 *
+	 * @return bool|int
 	 */
-	public function update(array $attributes = []) {
+	public function save(array $attributes = []) {
 		$this->first_name = $attributes['first_name'];
 		$this->last_name = $attributes['last_name'];
 		$this->spouse_name = $attributes['spouse_name'];
@@ -67,6 +69,6 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
 		if (!empty($attributes['is_admin'])) {
 			$this->is_admin = toBool($attributes['is_admin']);
 		}
-		parent::update($attributes);
+		return parent::save();
 	}
 }

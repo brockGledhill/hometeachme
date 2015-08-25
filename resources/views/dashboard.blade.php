@@ -51,15 +51,15 @@
 				<div class="monthitem">
 					<div class="visitclickitem" onclick="checkvisit('{{ $family['id'] }}' , '{{ $abbr }}' , this.id, '{{ $companion['id'] or '' }}');"  id="{{ $abbr }}-{{ $myFamilies[$index]['family']['last_name'] }}">
 						<a class="visiticon glyphicon
-							@if ($myFamilies[$index]['visitMonth'] === $abbr)
+							@if (in_array($abbr, $myFamilies[$index]['visitMonth']))
 								glyphicon-ok-sign
 							@else
 								glyphicon-unchecked
 							@endif"></a>
-						<span class="monthlabel @if ($myFamilies[$index]['visitMonth'] === $abbr) home-taught-month @endif">{{ $month }}</span>
+						<span class="monthlabel @if (in_array($abbr, $myFamilies[$index]['visitMonth'])) home-taught-month @endif">{{ $month }}</span>
 					</div>
 					<a class="commentbutton
-						@if ($myFamilies[$index]['visitMonth'] === $abbr)
+						@if (in_array($abbr, $myFamilies[$index]['visitMonth']))
 							commentbutton--show
 						@endif"
 					   onclick="monthcomment('{{ $family['id'] }}', '{{ $companion['id'] or '' }}', '{{ $abbr }}');">Add Comment</a>
@@ -139,10 +139,10 @@ function dontdelete(commentid){
 function confdelete(commentid){
 	var thedelfamily = $("#familyinput").val();
 	$.ajax({
-     	 	url: 'removecomment.php',
+     	 	url: '/comment/delete',
       		type: 'post',
-     	 	data: {'thecommentid': commentid},
-      		success: function(data, status) {
+     	 	data: {'id': commentid},
+      		success: function() {
 		  		$("#fullcommentrow" + commentid).css("display","none");
 				$("#family" + thedelfamily).children("#fullcommentrow" + commentid).css("display","none");
       		},
@@ -154,42 +154,39 @@ function showthemonths(familyname){
 }
 
 function checkvisit(houseid, vmonth, currentitem, housename) {
-	if ($("#" + currentitem + " a").hasClass("glyphicon-ok-sign")){
-		var visnum = Number(document.getElementById("displayvisitnum" + houseid).innerHTML);
-		//alert('yep');
-		visnum --;
-		
-		$.ajax({
-     	 	url: 'removevisit.php',
-      		type: 'post',
-     	 	data: {'thehouseid': houseid, 'thevisitmonth': vmonth},
-      		success: function(data, status) {
-		
-		  		$("#" + currentitem + " a").removeClass('glyphicon-ok-sign').addClass("glyphicon-unchecked");
-		  		$("#" + currentitem).css("color","#CCCCCC");
-				$("#" + currentitem).parent().children(".commentbutton").css("display","none");
-				$("#displayvisitnum" + houseid).html(visnum);
-				
-      		},
-		}); // end ajax call
+	var visnum = Number(document.getElementById("displayvisitnum" + houseid).innerHTML);
+	var url = '';
+	var success;
+	if ($("#" + currentitem + " a").hasClass("glyphicon-ok-sign")) {
+		--visnum;
+		url = '/visit/delete';
+
+		success = function (data, status) {
+			$("#" + currentitem + " a").removeClass('glyphicon-ok-sign').addClass("glyphicon-unchecked");
+			$("#" + currentitem + " a").parent().find('.monthlabel').removeClass('home-taught-month');
+			$("#" + currentitem).parent().children(".commentbutton").hide();
+			$("#displayvisitnum" + houseid).html(visnum);
+		};
+	} else {
+		++visnum;
+		url = '/visit/add';
+		success = function(data, status) {
+			$("#" + currentitem + " a").removeClass('glyphicon-unchecked').addClass("glyphicon-ok-sign");
+			$("#" + currentitem + " a").parent().find('.monthlabel').addClass('home-taught-month');
+			$("#" + currentitem).parent().children(".commentbutton").show();
+			$("#displayvisitnum" + houseid).html(visnum);
+		};
 	}
-	else {
-		var visnum = Number(document.getElementById("displayvisitnum" + houseid).innerHTML);
-		//alert('yep');
-		visnum ++;
-		$.ajax({
-     	 	url: 'addvisit.php',
-      		type: 'post',
-     	 	data: {'thehouseid': houseid, 'thevisitmonth': vmonth, 'thehousename': housename},
-      		success: function(data, status) {
-		
-		  		$("#" + currentitem + " a").removeClass('glyphicon-unchecked').addClass("glyphicon-ok-sign");
-		  		$("#" + currentitem).css("color","#5dc0b2");
-				$("#" + currentitem).parent().children(".commentbutton").css("display","block");
-				$("#displayvisitnum" + houseid).html(visnum);
-      		},
-		}); // end ajax call	
-	}
+	$.ajax({
+		url: url,
+		type: 'post',
+		data: {
+			'member_id': houseid,
+			'visit_month': vmonth,
+			'comp_id': housename
+		},
+		success: success
+	}); // end ajax call
 }
 
 function monthcomment(familyid, companionshipid, themonth){
@@ -212,15 +209,22 @@ function savedacomment(){
 	var thecurrentfamily = $("#familyinput").val();
 	
 	$.ajax({
-     	 	url: 'savecomment.php',
+     	 	url: '/comment/add',
       		type: 'post',
-     	 	data: {'commenttextname': $("#textcommentbox").val(), 'familyname': $("#familyinput").val(), 'hometeachername': $("#hometeacherinput").val(), 'companionshipname': $("#companionshipinput").val(), 'wardinputname': $("#wardinput").val(), 'monthname': $("#monthinput").val() },
-      		success: function(rcid) {
+     	 	data: {
+				'comment_text': $("#textcommentbox").val(),
+				'family_id': $("#familyinput").val(),
+				'member_id': $("#hometeacherinput").val(),
+				'companion_id': $("#companionshipinput").val(),
+				'ward_id': $("#wardinput").val(),
+				'visit_month': $("#monthinput").val()
+			},
+      		success: function(response) {
 		
 				//temporarily add the dom elements of the comment to show it was added
-				document.getElementById("previouscomments").innerHTML += '<div id="fullcommentrow' + rcid + '" class="famcommentrow"><div class="commentcont"><div class="commentmonth">'+ $("#monthinput").val() + ' 2015</div><div>'+ $("#textcommentbox").val() +'</div></div><div style="display:none;" id="commentconfirm' + rcid + '" class="delcommentbox"><span class="delconftitle">Delete Comment?</span><a class="delconfbtn btn btn-primary" href="javascript: confdelete(' + rcid + ')">Yes</a><a class="delconfbtn delright btn btn-danger" href="javascript: dontdelete(' + rcid + ')">No</a></div><a class="delcomment glyphicon glyphicon-remove" href="javascript: deletecomment(' + rcid + ')"></a></div>';
+				document.getElementById("previouscomments").innerHTML += '<div id="fullcommentrow' + response.id + '" class="famcommentrow"><div class="commentcont"><div class="commentmonth">'+ $("#monthinput").val() + ' 2015</div><div>'+ $("#textcommentbox").val() +'</div></div><div style="display:none;" id="commentconfirm' + response.id + '" class="delcommentbox"><span class="delconftitle">Delete Comment?</span><a class="delconfbtn btn btn-primary" href="javascript: confdelete(' + response.id + ')">Yes</a><a class="delconfbtn delright btn btn-danger" href="javascript: dontdelete(' + response.id + ')">No</a></div><a class="delcomment glyphicon glyphicon-remove" href="javascript: deletecomment(' + response.id + ')"></a></div>';
 				
-				document.getElementById("family" + thecurrentfamily).innerHTML += '<div id="fullcommentrow' + rcid + '" class="famcommentrow"><div class="commentcont"><div class="commentmonth">'+ $("#monthinput").val() + ' 2015</div><div>'+ $("#textcommentbox").val() +'</div></div><div style="display:none;" id="commentconfirm' + rcid + '" class="delcommentbox"><span class="delconftitle">Delete Comment?</span><a class="delconfbtn btn btn-primary" href="javascript: confdelete(' + rcid + ')">Yes</a><a class="delconfbtn delright btn btn-danger" href="javascript: dontdelete(' + rcid + ')">No</a></div><a class="delcomment glyphicon glyphicon-remove" href="javascript: deletecomment(' + rcid + ')"></a></div>';
+				document.getElementById("family" + thecurrentfamily).innerHTML += '<div id="fullcommentrow' + response.id + '" class="famcommentrow"><div class="commentcont"><div class="commentmonth">'+ $("#monthinput").val() + ' 2015</div><div>'+ $("#textcommentbox").val() +'</div></div><div style="display:none;" id="commentconfirm' + response.id + '" class="delcommentbox"><span class="delconftitle">Delete Comment?</span><a class="delconfbtn btn btn-primary" href="javascript: confdelete(' + response.id + ')">Yes</a><a class="delconfbtn delright btn btn-danger" href="javascript: dontdelete(' + response.id + ')">No</a></div><a class="delcomment glyphicon glyphicon-remove" href="javascript: deletecomment(' + response.id + ')"></a></div>';
 
 				emptythebox();
       		},
