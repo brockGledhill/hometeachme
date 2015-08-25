@@ -1,1 +1,0 @@
-{"version":3,"sources":["global.js"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA","file":"global.js","sourcesContent":["$(function () {\n\t$.ajaxSetup({\n\t\theaders: {\n\t\t\t'X-CSRF-TOKEN': $('meta[name=\"_token\"]').attr('content')\n\t\t}\n\t});\n});"],"sourceRoot":"/source/"}
