@@ -22,7 +22,7 @@ class CreateWardCompanionsTable extends Migration
 			$table->bigInteger('ward_id');
 			$table->bigInteger('district_id');
 			$table->bigInteger('quorum_id');
-			$table->bigInteger('family_id');
+			$table->bigInteger('family_id')->nullable();
             $table->timestamps();
         });
     }

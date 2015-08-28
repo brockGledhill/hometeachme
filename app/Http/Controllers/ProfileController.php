@@ -18,7 +18,7 @@ class ProfileController extends Controller {
 
 	public function postIndex() {
 		$WardMember = Auth::user();
-		$WardMember->save(Input::all());
+		$WardMember->saveProfileUpdates(Input::all());
 		return Redirect::back()->with('status', 'Profile Updated!');
 	}
 }

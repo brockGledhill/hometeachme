@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
-class NotificationsController extends Controller {
+class MessageController extends Controller {
 	public function __construct() {
 		$this->middleware('auth');
 	}
 
 	public function getIndex() {
-		return view('notifications');
+		return view('messages');
 	}
 }

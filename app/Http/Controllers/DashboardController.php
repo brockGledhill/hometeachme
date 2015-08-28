@@ -15,26 +15,25 @@ class DashboardController extends Controller {
 
 	public function getIndex() {
 		$data = [];
-		$data['title'] = 'Dashboard';
 
 		$authUser = Auth::user();
 
 		$data['authId'] = $authUser->id;
 		$data['wardId'] = $authUser->ward_id;
 
-		$wardCompanion = WardCompanions::where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId'])->first();
+		$WardCompanion = WardCompanions::where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId'])->first();
 
-		if (!empty($wardCompanion) && $wardCompanion->ht_one_id == $data['authId']) {
-			$data['companion'] = WardMember::find($wardCompanion->ht_two_id);
+		if (!empty($WardCompanion) && $WardCompanion->ht_one_id == $data['authId']) {
+			$data['companion'] = WardMember::find($WardCompanion->ht_two_id);
 		} else {
-			$data['companion'] = WardMember::find($wardCompanion->ht_one_id);
+			$data['companion'] = WardMember::find($WardCompanion->ht_one_id);
 		}
 		if (!empty($data['companion'])) {
 			$data['companionName'] = $data['companion']->first_name . ' ' . $data['companion']->last_name;
 			$data['companionPhone'] = $data['companion']->phone;
 		}
 
-		$data['allFamilies'] = WardCompanionshipMembers::where('companionship_id', '=', $data['authId'])->get();
+		$data['allFamilies'] = WardCompanionshipMembers::where('companionship_id', '=', $WardCompanion->id)->get();
 		$data['numFamilies'] = count($data['allFamilies']);
 		$data['totalVisitCount'] = 0;
 		if ($data['numFamilies'] > 0) {

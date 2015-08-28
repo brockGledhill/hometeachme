@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.default', ['title' => 'Dashboard'])
 
 @section('content')
 <div id="commentslidomatic">
@@ -42,7 +42,7 @@
 				<span class="visitstitle">visits</span>
 			</div>
 
-			<span id="familynameid{{ $index }}" class="famdisplay">{{ $myFamilies[$index]['family']['last_name'] . ', ' . $myFamilies[$index]['family']['first_name'] }}</span>
+			<span id="familynameid{{ $index }}" class="famdisplay">{{ $myFamilies[$index]['family']['last_name'] }}, {{ $myFamilies[$index]['family']['first_name'] }}  {{ $myFamilies[$index]['family']['spouse_name'] ? '& ' . $myFamilies[$index]['family']['spouse_name'] : '' }}</span>
 		</div>
 
 		<div style="display:none;" id="hiddenmonths{{ $myFamilies[$index]['family']['last_name'] }}" class="monthrows">

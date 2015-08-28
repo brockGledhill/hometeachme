@@ -5,30 +5,7 @@
 $familylister = '';
 
 
-function getunhometeachers($incward, $incquorum){
-	$testhome = mysql_query("SELECT * FROM `ward_members` WHERE `WardID`='$incward' AND `QuorumID`='$incquorum' ");
-	for($i=1;$i<=mysql_num_rows($testhome);$i++)
-				{
-					$row = mysql_fetch_array($testhome);
-					$themember = $row[MemberID];
-					
-					echo findunhters($themember);
-				}
-				
-				
-}
 
-function findunhters($incomingmember){
-					$getcomperfamilies = mysql_query("SELECT * FROM `ward_compans` WHERE `HtOneID`='$incomingmember' OR  `HtTwoID`='$incomingmember'");
-					
-					// If Member doesn't exist in the companionship table
-					if(mysql_fetch_array($getcomperfamilies) == NULL){
-						$getfamilynamers = mysql_query("SELECT * FROM `ward_members` WHERE `MemberID`='$incomingmember' ");
-						$gfrow = mysql_fetch_array($getfamilynamers);
-						return $gfrow[First_Name][0] .' '. $gfrow[Last_Name] .'<br />';
-					}
-					
-}
 
 function retfamnames($themonth, $theward, $thequorum, $visitcount){
 	$getmonthfamilies = mysql_query("SELECT * FROM `wardcomp_visits` WHERE `visitmonth`='$themonth' AND  `WardID`='$theward' AND `WardID`='$thequorum'");

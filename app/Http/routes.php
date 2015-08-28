@@ -19,8 +19,9 @@ Route::post('/login', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
 
 Route::controller('/dashboard', 'DashboardController');
-Route::controller('/notifications', 'NotificationsController');
-Route::controller('/messages', 'MessagesController');
+Route::controller('/notifications', 'NotificationController');
+Route::controller('/messages', 'MessageController');
 Route::controller('/profile', 'ProfileController');
 Route::controller('/visit', 'VisitController');
 Route::controller('/comment', 'CommentController');
+Route::controller('/companionships', 'CompanionshipController');

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Support\Facades\Hash;
 
 class WardMember extends Model implements AuthenticatableContract, CanResetPasswordContract {
 	use Authenticatable, CanResetPassword;
@@ -45,7 +46,7 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
 	 *
 	 * @return bool|int
 	 */
-	public function save(array $attributes = []) {
+	public function saveProfileUpdates(array $attributes = []) {
 		$this->first_name = $attributes['first_name'];
 		$this->last_name = $attributes['last_name'];
 		$this->spouse_name = $attributes['spouse_name'];
@@ -71,4 +72,17 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
 		}
 		return parent::save();
 	}
+
+	/*public function hashPasswords() {
+		$WardMembers = WardMember::all();
+		foreach ($WardMembers as $WardMember) {
+			if (!empty($WardMember->password)) {
+				$newWardMember = WardMember::find($WardMember->id);
+				$newWardMember->password = Hash::make($WardMember->password);
+				$newWardMember->save();
+			}
+		}
+		echo "DONE!";
+		exit;
+	}*/
 }
