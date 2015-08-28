@@ -470,7 +470,8 @@ h4 {
   clear: both;
   padding: 10px; }
 
-.comprow:nth-child(odd) {
+.comprow:nth-child(odd),
+.memberrow:nth-child(odd) {
   background-color: #f4f4f4; }
 
 .hter {
