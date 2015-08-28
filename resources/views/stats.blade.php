@@ -1,128 +1,55 @@
-<?
-session_start();
-mysql_connect("ssiuxtools.db.11473969.hostedresource.com", "ssiuxtools", "D!ngd0ng");
-mysql_select_db("ssiuxtools");
-$thename;
-$numfams = 0;
+@extends('layouts.default')
 
-$famstrings;
+@section('content')
+<div class="subcenterbox">
 
-if (!$_SESSION['ward_logins']['emailaddress']) {
-	header("Location: index.php?cmd=logout");
-}
+	<h4 class="pagetitles">Family Visit Totals</h4>
 
-//echo $_SESSION['ward_logins']['Is_Admin'];
-$adminstatus = $_SESSION['ward_logins']['Is_Admin'];
-//echo $adminstatus;
+	<div id="statscontainer">
 
-if ($adminstatus != 1) {
-	header("Location: index.php?cmd=logout");
-}
+		<div id="famvisits" class="addcompanrow">
 
-$dayear = date('Y');
-$mywardid = $_SESSION['ward_logins']['WardID'];
-$myquorumid = $_SESSION['ward_logins']['QuorumID'];
+			@foreach ($visitMonths as $visitMonth)
+				<div class="mymonths" id="monthdisplay{{ $visitMonth['visit_month'] }}"
+					 onclick="togmonthfamily('{{ $visitMonth['visit_month'] }}')">
+					<div class="monthstatrow">
+						<span id="montharrow{{ $visitMonth['visit_month'] }}"
+							  class="visarrow glyphicon glyphicon-menu-right"></span>
+						<span>{{ $visitMonth['visit_month'] }}</span>
+						<span class="visitsnums">{{ $visitMonth['count'] }}</span>
+					</div>
 
+					<div style="display:none;" id="hidevisfams{{ $visitMonth['visit_month'] }}" class="hidesection">
+						@foreach ($members[$visitMonth['visit_month']] as $member)
+							<div class="famvisnames">{{ $member['first_name'] }} {{ $member['last_name'] }}</div>
+						@endforeach
+					</div>
 
-$getvisitmonths = mysql_query("SELECT `visitmonth`, COUNT(*) c From `wardcomp_visits` WHERE `WardID`='$mywardid' AND `QuorumID`='$myquorumid' GROUP BY `visitmonth` HAVING c > 0 ORDER BY FIELD(visitmonth,'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec')");
-
-include("functions.php");
-
-?>
-
-<!doctype html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Family</title>
-<script src="charts/Chart.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<link href="style.css" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-<link href='http://fonts.googleapis.com/css?family=Exo+2:400,100' rel='stylesheet' type='text/css'>
-
-</head>
-
-<body onLoad="runallthis()">
-
-<div id="topbar">
-
-    <a id="homebtnid" class="topbtn" href="dashboard.php" title="home"><span class="glyphicon glyphicon-home" ></span></a>
-    <a class="topbtn" href="notifications.php" title="notifications"><span class="glyphicon glyphicon-bell" ></span></a>
-    <a class="topbtn" href="messages.php" title="messages"><span class="glyphicon glyphicon-envelope" ></span></a>
-    <a class="topbtn" href="myprofile.php" title="messages"><span class="glyphicon glyphicon-cog" ></span></a>
-    <a href="index.php?cmd=logout" class="logout topbtn pushright" href="#" title="logout"><span class="glyphicon glyphicon-log-out" ></span></a></div>
-   
-<div id="mainbox">
-
-	<div id="adminnav"><a class="adminbtn" href="comps.php">Companionships</a><a class="adminbtn pushadmin" href="members.php">Members</a><a class="adminbtn pushadmin" href="districts.php">Districts</a><a class="adminbtn filledin pushadmin" href="stats.php">Stats</a></div>
-
-	<div class="subcenterbox">
-    
-    <h4 class="pagetitles">Family Visit Totals</h4>
-    
-    	<div id="statscontainer">
-       
-            <div id="famvisits" class="addcompanrow">
-           
-           
-                 <?php
-            		$montharray = array();
-			
-                    for($i=1;$i<=mysql_num_rows($getvisitmonths);$i++)
-                    {
-                        $row = mysql_fetch_array($getvisitmonths);
-                        
-                        $storevisitmonth = $row[visitmonth];
-                        $storethecount = $row[c];
-						array_push($montharray, $storevisitmonth);
-                        echo  retfamnames($storevisitmonth, $mywardid, $myquorumid, $storethecount);
-                     
-                    }
-                
-                ?>
-            
-            </div>
-            
-            <div id="visitschart" class="addcompanrow">
-           
-           
-                <canvas id="myChart" width="650" height="400"></canvas>
-            
-            </div>
-        
-        </div>
-    
-    </div>
-    
-    
-    
-    </div>
-
+				</div>
+			@endforeach
+		</div>
+		<div id="visitschart" class="addcompanrow">
+			<canvas id="myChart" width="650" height="400"></canvas>
+		</div>
+	</div>
 </div>
 
 <form id="removedamember" action="removemember.php" method="post" style="display:none;">
-
-<input id="memberidbox" name="memberidname" type="text" />
-<input id="memberidbox" name="wardidname" type="text" value="<?php echo $mywardid ?>" />
-
+	<input id="memberidbox" name="memberidname" type="text"/>
+	<input id="memberidbox" name="wardidname" type="text" value="{{ $wardId }}"/>
 </form>
 
 <form id="editmemberform" action="editmember.php" method="post" style="display:none;">
-
-<input id="membereditidbox" name="membereditname" type="text" />
-
+	<input id="membereditidbox" name="membereditname" type="text"/>
 </form>
 
-<div id="footer"></div>
-
+<script type="text/javascript" src="/js/charts/Chart.js"></script>
 <script type="text/javascript">
 
-var totalfamilies = <?php echo $numfams ?>;
+var totalfamilies = 0;
 var menuopen = false;
 var montharray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
+runallthis();
 function runallthis(){
 	
 	
@@ -331,6 +258,4 @@ function togmonthfamily(themonth){
 
 
 </script>
-
-</body>
-</html>
+@stop

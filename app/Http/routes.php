@@ -27,3 +27,4 @@ Route::controller('/comment', 'CommentController');
 Route::controller('/companionships', 'CompanionshipController');
 Route::controller('/members', 'MemberController');
 Route::controller('/districts', 'DistrictController');
+Route::controller('/stats', 'StatisticsController');
