@@ -32,8 +32,7 @@ class VisitController extends Controller {
 	}
 
 	public function postDelete() {
-		$AuthUser = Auth::user();
-		$WardCompanionshipVisit = WardCompanionshipVisits::firstOrNew(Input::all());
+		$WardCompanionshipVisit = WardCompanionshipVisits::first(Input::all());
 		$WardCompanionshipVisit->delete();
 
 		if (Request::ajax()) {

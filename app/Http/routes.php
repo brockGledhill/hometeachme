@@ -24,6 +24,8 @@ Route::controller('/messages', 'MessageController');
 Route::controller('/profile', 'ProfileController');
 Route::controller('/visit', 'VisitController');
 Route::controller('/comment', 'CommentController');
+Route::controller('/companionships/districts', 'CompanionshipDistrictController');
+Route::controller('/companionships/members', 'CompanionshipMemberController');
 Route::controller('/companionships', 'CompanionshipController');
 Route::controller('/members', 'MemberController');
 Route::controller('/districts', 'DistrictController');

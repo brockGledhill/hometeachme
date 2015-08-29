@@ -5,3 +5,14 @@ $(function() {
 		}
 	});
 });
+
+function deletecomprow(compid) {
+	$.ajax({
+		url: '/companionships/delete?id=' + compid,
+		type: 'post',
+		data: {'thecompid': compid},
+		success: function(data, status) {
+			$("#fullcomprow" + compid).slideUp();
+		},
+	}); // end ajax call
+}

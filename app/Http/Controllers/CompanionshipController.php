@@ -6,6 +6,10 @@ use App\WardCompanionshipMembers;
 use App\WardDistricts;
 use App\WardMember;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Request;
 
 class CompanionshipController extends Controller {
 	public function __construct() {
@@ -32,7 +36,9 @@ class CompanionshipController extends Controller {
 			$data['existingHomeTeacherCompanion'][$key]['homeTeacher'][2] = WardMember::find($homeTeachers->ht_two_id);
 			$families =  WardCompanionshipMembers::where('companionship_id', '=', $homeTeachers->id)->get();
 			foreach ($families as $family) {
-				$data['existingHomeTeacherCompanion'][$key]['families'][] = WardMember::find($family->member_id);
+				$taughtFamily = &$data['existingHomeTeacherCompanion'][$key]['families'][];
+				$taughtFamily = WardMember::find($family->member_id);
+				$taughtFamily['ward_companionship_member_id'] = $family->id;
 			}
 			$district = WardDistricts::find($homeTeachers->district_id);
 			if ($district) {
@@ -60,5 +66,47 @@ class CompanionshipController extends Controller {
 		}
 
 		return view('companionships', $data);
+	}
+
+	public function postAdd(Request $Request) {
+		$WardCompanions = WardCompanions::create(Input::except('member_id'));
+		foreach (Input::get('member_id') as $memberId) {
+			$WardCompanionshipMembers = new WardCompanionshipMembers();
+			$WardCompanionshipMembers->member_id = $memberId;
+			$WardCompanionshipMembers->companionship_id = $WardCompanions->id;
+			$WardCompanionshipMembers->save();
+		}
+		$status = 'Companionship Added With Families!';
+		if ($Request->ajax()) {
+			return Response::json(['success' => true, 'status' => $status]);
+		}
+		return Redirect::back()->with('status', $status);
+	}
+
+	public function postUpdate(Request $Request) {
+		if ($Request->isMethod('post')) {
+			$WardCompanions = WardCompanions::find(Input::get('id'));
+			$htOneId = Input::get('ht_one_id');
+			if (null !== $htOneId) {
+				$WardCompanions->ht_one_id = $htOneId;
+			} else {
+				$WardCompanions->ht_two_id = Input::get('ht_two_id');
+			}
+			$WardCompanions->update();
+		}
+		return Redirect::back()->with('status', 'Companion Removed.');
+	}
+
+	public function postDelete(Request $Request) {
+		if ($Request->isMethod('post')) {
+			$id = Input::get('id');
+			WardCompanions::destroy($id);
+			WardCompanionshipMembers::where('companionship_id', '=', $id)->first()->delete();
+		}
+		$status = 'Companionship Removed.';
+		if ($Request->ajax()) {
+			return Response::json(['success' => true, 'status' => $status]);
+		}
+		return Redirect::back()->with('status', $status);
 	}
 }

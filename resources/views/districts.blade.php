@@ -1,18 +1,19 @@
 @extends('layouts.default')
 
 @section('content')
-<div class="subcenterboxd">
+<div class="subcenterbox">
 
 	<h4 class="pagetitles">Add New District</h4>
 
-	<form id="newdistform" action="adddistrict.php" method="post">
-		<input style="display:none;" name="thewardidname" value="{{ $wardId }}"/>
-		<input style="display:none;" name="thequorumidname" value="{{ $quorumId }}"/>
+	<form id="newdistform" method="post">
+		{!! csrf_field() !!}
+		<input style="display:none;" name="ward_id" value="{{ $wardId }}"/>
+		<input style="display:none;" name="quorum_id" value="{{ $quorumId }}"/>
 
 		<div class="addcompanrow">
 			<span class="familytitle">District Leader</span>
 
-			<select name="thehousename">
+			<select name="member_id">
 				<option value="0">Not Selected</option>
 				@foreach ($families as $family)
 					<option value="{{ $family['id'] }}">{{ $family['first_name'] }} {{ $family['last_name'] }}</option>
@@ -27,7 +28,7 @@
 
 </div>
 
-<div class="subcenterboxd">
+<div class="subcenterbox">
 	<h4 class="pagetitles">Current Districts</h4>
 
 	@foreach ($districts as $member)

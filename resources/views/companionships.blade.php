@@ -8,7 +8,7 @@
 	</div>
 @endforeach
 <div style="display:none;" id="familyselector">
-	<select onChange="javascript: setfaminput(this.value)" class="newfamrow">
+	<select onchange="setfaminput(this.value)" class="newfamrow" name="member_id[]">
 		<option value="0">Not Selected</option>
 		@foreach ($families as $family)
 			<option value="{{ $family->id }}">{{ $family->first_name }} {{ $family->last_name }}</option>
@@ -19,22 +19,22 @@
 <div class="subcenterbox">
     <h4 class="pagetitles">Create New Companionship</h4>
 
-	<form id="newcompform" action="createcomp.php" method="post">
-		<input style="display:none;" name="thequorumidname" value="{{ $quorumId }}"/>
-		<input style="display:none;" name="thewardidname" value="{{ $wardId }}"/>
-		<input id="familypile" style="display:none;" name="thefamilyname" value=""/>
+	<form id="newcompform" action="/companionships/add" method="post">
+		{!! csrf_field() !!}
+		<input type="hidden" name="quorum_id" value="{{ $quorumId }}"/>
+		<input type="hidden" name="ward_id" value="{{ $wardId }}"/>
 
 		<div id="familydiv" class="addcompanrow">
 			<span class="familytitle">Family</span>
 
 			<div id="pushfamselectors">
-				<select onChange="javascript: setfaminput(this.value)" class="newfamrow" id="familyider1">
+				<select onchange="setfaminput(this.value)" class="newfamrow" id="familyider1" name="member_id[]">
 					<option value="0">Not Selected</option>
 					@foreach ($families as $family)
 						<option value="{{ $family->id }}">{{ $family->last_name }}, {{ $family->first_name }}</option>
 					@endforeach
 				</select>
-				<select onChange="javascript: setfaminput(this.value)" class="newfamrow" id="familyider2">
+				<select onchange="setfaminput(this.value)" class="newfamrow" id="familyider2" name="member_id[]">
 					<option value="0">Not Selected</option>
 					@foreach ($families as $family)
 						<option value="{{ $family->id }}">{{ $family->last_name }}, {{ $family->first_name }}</option>
@@ -42,11 +42,11 @@
 				</select>
 
 			</div>
-			<a id="additionalfambtn" href="javascript: onemorefamily()">Additional Family</a>
+			<a id="additionalfambtn" onclick="onemorefamily()">Additional Family</a>
 
 			<div class="addcompanrow">
 				<span class="familytitle">Home Teacher</span>
-				<select class="myselect" name="thehtonename">
+				<select class="myselect" name="ht_one_id">
 					<option value="0">Not Selected</option>
 					@foreach ($families as $family)
 						<option value="{{ $family->id }}">{{ $family->last_name }}, {{ $family->first_name }}</option>
@@ -57,17 +57,16 @@
 				<span class="familytitle">Home Teacher</span>
 
 				<div id="useableselect">
-					<select class="myselect" name="thehttwoname">
+					<select class="myselect" name="ht_two_id">
 						<option value="0">Not Selected</option>
 						@foreach ($families as $family)
 							<option value="{{ $family->id }}">{{ $family->last_name }}, {{ $family->first_name }}</option>
 						@endforeach
-
 					</select>
 				</div>
 			</div>
 
-			<a onclick="submitcomp()" class="newsavebtn btn btn-default">Add</a>
+			<input type="submit" class="newsavebtn btn btn-default" value="Add" />
 		</div>
 	</form>
 </div>
@@ -114,17 +113,25 @@
 						@foreach ($existingHomeTeacherCompanion[$key]['families'] as $family)
 							<div class="familyname">
 								<div class="famlabel">{{ $family['first_name'][0] }} {{ $family['last_name'] }}</div>
-								<a class="remfamicon glyphicon glyphicon-remove" onclick="remfam('{{ $family['id'] }}', '{{ $homeTeachers->id }}')"></a>
+								<form action="/companionships/members/delete?id={{ $family['ward_companionship_member_id'] }}" method="post">
+									{!! csrf_field() !!}
+									<a class="remfamicon glyphicon glyphicon-remove" onclick="$(this).closest('form').submit();"></a>
+								</form>
 							</div>
 						@endforeach
 					</div>
-					<a class="rowaddbtn" id="addfambtn'.$companoid.'" onclick="addfamily('{{ $homeTeachers->id }}')">+ Add Family</a>
+					<a class="rowaddbtn" id="addfambtn{{ $homeTeachers->id }}" onclick="addfamily('{{ $homeTeachers->id }}')">+ Add Family</a>
 
-					<form id="famform{{ $homeTeachers->id }}" class="famformclass" action="addFamily.php" method="post">
-						<div class="selectbar" id="selectspot{{ $homeTeachers->id }}"></div>
-						<input style="display:none;" id="thefamlist{{ $homeTeachers->id }}" name="existingfamsname" type="text" value="{{ $family['id'] }}" />
-						<input style="display:none;" name="compidname" type="text" value="{{ $homeTeachers->id }}"/>
-						<a class="additbtnclass" style="display:none;" id="addfamgo{{ $homeTeachers->id }}" onclick="submitfamadd('{{ $homeTeachers->id }}');">ADD</a>
+					<form id="addfamform{{ $homeTeachers->id }}" class="famformclass" action="/companionships/members/add" method="post" style="display:none;">
+						{!! csrf_field() !!}
+						<select class="myselect" name="member_id">
+							<option value="0">Not Selected</option>
+							@foreach ($families as $family)
+								<option value="{{ $family->id }}">{{ $family->last_name }}, {{ $family->first_name }}</option>
+							@endforeach
+						</select>
+						<input name="companionship_id" type="hidden" value="{{ $homeTeachers->id }}"/>
+						<input class="additbtnclass newsavebtn btn btn-default" id="addfamgo{{ $homeTeachers->id }}" type="submit" value="ADD" />
 					</form>
 				</div>
 
@@ -135,15 +142,27 @@
 							<div class="hter">
 								@if (empty($homeTeacher['first_name']) && empty($homeTeacher['last_name']))
 									<div class="addcompbox">
-										<form class="hiddenselectclass" id="hiddenadd{{ $homeTeachers->id }}" method="post" action="addtheht.php"></form>
-										<div class="addcomptools" style="display:none;" id="addtools{{ $homeTeachers->id }}">
-											<a class="addcancelbtn glyphicon glyphicon-remove" onclick="nevermind('{{ $homeTeachers->id }}');"></a>
-											<a class="glyphicon glyphicon-floppy-disk" onclick="savenewcomp('{{ $homeTeachers->id }}');"></a>
-										</div>
-										<a id="addnewcompbtn{{ $homeTeachers->id }}" class="addacompbtn" onclick="addnewcomp('{{ $homeTeachers->id }}', '{{ $num }}');">+ Add New Comp</a>
+										<form class="hiddenselectclass" id="hiddenadd{{ $homeTeachers->id }}" method="post" action="/companionships/update?id={{ $homeTeachers->id }}" style="display: none;">
+											{!! csrf_field() !!}
+											<select class="myselect" name="ht_{{ $num == 1 ? 'one' : 'two' }}_id">
+												<option value="0">Not Selected</option>
+												@foreach ($families as $family)
+													<option value="{{ $family->id }}">{{ $family->last_name }}, {{ $family->first_name }}</option>
+												@endforeach
+											</select>
+											<div class="addcomptools" id="addtools{{ $homeTeachers->id }}">
+												<a class="addcancelbtn glyphicon glyphicon-remove" onclick="nevermind('{{ $homeTeachers->id }}');"></a>
+												<a class="glyphicon glyphicon-floppy-disk" onclick="savenewcomp('{{ $homeTeachers->id }}');"></a>
+											</div>
+										</form>
+										<a id="addnewcompbtn{{ $homeTeachers->id }}" class="addacompbtn" onclick="addnewcomp('{{ $homeTeachers->id }}');">+ Add New Comp</a>
 									</div>
 								@else
-									<a onclick="remht('{{ $homeTeachers->id }}', '{{ $num }}')" class="glyphicon glyphicon-remove"></a>
+									<form id="removedacomp{{ $homeTeachers->id }}-{{ $num }}" action="/companionships/update?id={{ $homeTeachers->id }}" method="post" style="display: none;">
+										{!! csrf_field() !!}
+										<input id="formcompid" name="ht_{{ $num == 1 ? 'one' : 'two' }}_id" type="hidden" value="0"/>
+									</form>
+									<a onclick="remht('{{ $homeTeachers->id }}', '{{ $num }}');" class="glyphicon glyphicon-remove"></a>
 									{{ $homeTeacher['first_name'] }} {{ $homeTeacher['last_name'] }}
 								@endif
 							</div>
@@ -161,40 +180,27 @@
 								<a class="nodistrict" onclick="updistrict('{{ $homeTeachers->id }}');">Assign District</a>
 							</div>
 						@endif
-						<div class="distcontrollclass" id="districtcontrol{{ $homeTeachers->id }}"></div>
+						<div class="distcontrollclass" id="districtcontrol{{ $homeTeachers->id }}" style="display: none;">
+							<form class="discform" id="dischangeform{{ $homeTeachers->id }}" action="/companionships/districts/update?id={{ $homeTeachers->id }}" method="post">
+								{!! csrf_field() !!}
+								<select id="district_id_select{{ $homeTeachers->id }}" class="myselect" name="district_id">
+									<option value="0">Not Selected</option>
+									@foreach ($districtList as $key => $district)
+										<option value="{{ $district['id'] }}">{{ $districtMembers[$key]['first_name'] }} {{ $districtMembers[$key]['last_name'] }}</option>
+									@endforeach
+								</select>
+
+								<div id="districtbtns">
+									<a onclick="submitdistchange('{{ $homeTeachers->id }}')" class="glyphicon glyphicon-floppy-disk"></a>
+									<a onclick="districtclose('{{ $homeTeachers->id }}')" class="glyphicon glyphicon-remove"></a>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
 		@endforeach
     </div>
-</div>
-
-
-<form id="removedacomp" action="updatecomp.php" method="post" style="display:none;">
-	<input id="formcompid" name="formcompname" type="text" value=""/>
-	<input id="formhtnumberid" name="formhtnumname" type="text" value=""/>
-</form>
-
-<form id="removedafamily" action="removeFamily.php" method="post" style="display:none;">
-	<input id="famcomperid" name="compidname" type="text" value=""/>
-	<input id="famfamerid" name="famidname" type="text" value=""/>
-</form>
-
-<div style="display:none;" id="districtchangebox">
-	<form class="discform" id="dischangeform" action="updatedistrict.php" method="post">
-		<input style="display:none;" type="text" id="mycompider" name="mycompnamer" value=""/>
-		<input style="display:none;" type="text" id="wardider" name="wardidname" value="{{ $wardId }}"/>
-		<input style="display:none;" type="text" id="quorumider" name="quorumidname" value="{{ $quorumId }}"/>
-
-		<select class="myselect" name="thedistrictname">
-			<option value="0">Not Selected</option>
-			@foreach ($districtList as $key => $district)
-				<option value="{{ $district['id'] }}">{{ $districtMembers[$key]['first_name'] }} {{ $districtMembers[$key]['last_name'] }}</option>
-			@endforeach
-		</select>
-
-		<div id="districtbtns"></div>
-	</form>
 </div>
 
 <form style="display:none;" id="searchmemberform" action="searchmembers.php" method="post">
@@ -289,33 +295,21 @@ function checkvisit(houseid, vmonth, currentitem, housename){
 }
 
 function updistrict(dacompid){
-	$("#districtbtns").html("<a href='javascript: submitdistchange(" + dacompid + ")' class='glyphicon glyphicon-floppy-disk'></a><a href='javascript: districtclose(" + dacompid + ")' class='glyphicon glyphicon-remove'></a>");
-	$("#districtchangebox form").attr("id","dischangeform" + dacompid);
-	$("#dischangeform" + dacompid ).find("#mycompider").attr("value", dacompid);
-	$("#districtcontrol" + dacompid).html($("#districtchangebox").html());
-	$("#districtcontrol" + dacompid).children("#districtchangebox").css("display","block");
-	//$("#districtchangebox").css("display","block");
+	$("#districtcontrol" + dacompid).show();
 }
 
 function submitdistchange(yourcompid){
-	//$("#dischangeform" + yourcompid + " #mycompider").val(yourcompid);
 	$("#dischangeform" + yourcompid).submit();
 }
 
 function districtclose(compid){
-	$("#districtchangebox").css("display","none");
-	$("#districtcontrol" + compid).html("");
-}
-
-function submitcomp(){
-	$("#newcompform").submit();
+	$("#districtcontrol" + compid).hide();
 }
 
 function addfamily(thecompid){
 	$("#selectspot" + thecompid).html($("#useableselect").html());
 	$("#addfambtn" + thecompid).css("display","none");
-	$("#selectspot" + thecompid).children(".myselect").attr("id","comperselect" + thecompid);
-	$("#addfamgo" + thecompid).css("display","block");
+	$("#addfamform" + thecompid).show();
 }
 function submitfamadd(compidagain){
 	var $combined = $("#comperselect" + compidagain).val();
@@ -324,38 +318,15 @@ function submitfamadd(compidagain){
 	$("#famform" + compidagain).submit();
 	
 }
-function remfam(thefamid, thecompanid){
-	$("#famcomperid").val(thecompanid);
-	$("#famfamerid").val(thefamid);
-	$("#removedafamily").submit();
-	
-	/*var stringout = String($("#thefamlist" + thecompanid).val());
-	var res = stringout.split(",");
-	
-	for(var i = 0; i <= res.length; i ++)
-	{
-		if(res[i] == thefamid){
-			//alert('found it! ' + thefamid);
-			res.splice(i, 1);
-			$("#thefamlist" + thecompanid).val(String(res));	
-			$("#famform" + thecompanid).submit();
-		}
-	}*/
-	
-}
 
 function remht(cmpid, htnum){
-	$("#formcompid").val(cmpid);
-	$("#formhtnumberid").val(htnum);
-	
-	$("#removedacomp").submit();
+	$("#removedacomp" + cmpid + '-' + htnum).submit();
 	
 }
 
-function addnewcomp(cid, htnumber){
-	$("#hiddenadd" + cid).html($("#useableselect").html() + "<input style='display:none;' name='hiddenhtname' type='text' value='"+ htnumber+"' />" + "<input style='display:none;' name='hiddencid' type='text' value='"+ cid +"' />");
-	$("#addnewcompbtn" + cid).css("display","none");
-	$("#addtools" + cid).css("display","block");
+function addnewcomp(cid){
+	$("#addnewcompbtn" + cid).hide();
+	$("#hiddenadd" + cid).show();
 }
 
 function nevermind(thecid){

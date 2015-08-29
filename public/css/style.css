@@ -561,7 +561,8 @@ h4 {
 
 .additbtnclass {
   float: left;
-  margin-left: 10px; }
+  margin: 10px 0 0 0;
+  width: 100% !important; }
 
 .rowaddbtn {
   padding-left: 15px;

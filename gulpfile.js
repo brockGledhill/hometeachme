@@ -15,6 +15,6 @@ elixir(function(mix) {
     mix.sass(['**'], 'public/css/style.css');
 	mix.scripts([
 		'jquery/**',
-		'*'
+		'*.js'
 	], 'public/js/script.js');
 });

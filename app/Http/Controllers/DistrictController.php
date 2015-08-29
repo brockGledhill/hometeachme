@@ -4,6 +4,8 @@ namespace app\Http\Controllers;
 use App\WardDistricts;
 use App\WardMember;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
 
 class DistrictController extends Controller {
 	public function __construct() {
@@ -21,5 +23,10 @@ class DistrictController extends Controller {
 			$data['districts'][] = WardMember::find($district->member_id);
 		}
 		return view('districts', $data);
+	}
+
+	public function postIndex() {
+		WardDistricts::create(Input::all());
+		return Redirect::back()->with('status', 'District Added!');
 	}
 }
