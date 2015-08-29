@@ -195,22 +195,22 @@ $queryfamily = mysql_query("SELECT * FROM `ward_compans` WHERE `HtOneID`='$theid
 			</div>
 			
 			<div class="monthitem">
-			<div class="visitclickitem" onClick="javascript: checkvisit('.$storehouseid.' , \'Sep\' , this.id, \''.$thecompanionid.'\')"  id="Sep'.$storehousename.'"><a href="#" class="visiticon glyphicon glyphicon-unchecked"></a><span class="monthlabel">September</span> </div>
+			<div class="visitclickitem" onClick="javascript: checkvisit('.$storehouseid.' , \'Sep\' , this.id, \''.$thecompanionid.'\')"  id="Sep-'.$storehousename.'"><a href="#" class="visiticon glyphicon glyphicon-unchecked"></a><span class="monthlabel">September</span> </div>
 			<a class="commentbutton" href="javascript: monthcomment('.$storehouseid.','.$thecompanionid.', \'Sep\')">Add Comment</a>
 			</div>
 			
 			<div class="monthitem">
-			<div class="visitclickitem" onClick="javascript: checkvisit('.$storehouseid.' , \'Oct\' , this.id, \''.$thecompanionid.'\')"  id="Oct'.$storehousename.'"><a href="#" class="visiticon glyphicon glyphicon-unchecked"></a><span class="monthlabel">October</span></div>
+			<div class="visitclickitem" onClick="javascript: checkvisit('.$storehouseid.' , \'Oct\' , this.id, \''.$thecompanionid.'\')"  id="Oct-'.$storehousename.'"><a href="#" class="visiticon glyphicon glyphicon-unchecked"></a><span class="monthlabel">October</span></div>
 			<a class="commentbutton" href="javascript: monthcomment('.$storehouseid.','.$thecompanionid.', \'Oct\')">Add Comment</a>
 			</div>
 			
 			<div class="monthitem">
-			<div class="visitclickitem" onClick="javascript: checkvisit('.$storehouseid.' , \'Nov\' , this.id, \''.$thecompanionid.'\')"  id="Nov'.$storehousename.'"><a href="#" class="visiticon glyphicon glyphicon-unchecked"></a><span class="monthlabel">November</span></div>
+			<div class="visitclickitem" onClick="javascript: checkvisit('.$storehouseid.' , \'Nov\' , this.id, \''.$thecompanionid.'\')"  id="Nov-'.$storehousename.'"><a href="#" class="visiticon glyphicon glyphicon-unchecked"></a><span class="monthlabel">November</span></div>
 			<a class="commentbutton" href="javascript: monthcomment('.$storehouseid.','.$thecompanionid.', \'Nov\')">Add Comment</a>
 			</div>
 
 			<div class="monthitem noborder">
-			<div class="visitclickitem" onClick="javascript: checkvisit('.$storehouseid.' , \'Dec\' , this.id, \''.$thecompanionid.'\')"  id="Dec'.$storehousename.'"><a href="#" class="visiticon glyphicon glyphicon-unchecked"></a><span class="monthlabel">December</span></div>
+			<div class="visitclickitem" onClick="javascript: checkvisit('.$storehouseid.' , \'Dec\' , this.id, \''.$thecompanionid.'\')"  id="Dec-'.$storehousename.'"><a href="#" class="visiticon glyphicon glyphicon-unchecked"></a><span class="monthlabel">December</span></div>
 			<a class="commentbutton" href="javascript: monthcomment('.$storehouseid.','.$thecompanionid.', \'Dec\')">Add Comment</a>
 			</div>
 			
@@ -363,6 +363,8 @@ var totalfamilies = <?php echo $numfams ?>;
 var menuopen = false;
 var commentopens = false;
 
+var runningvisitupdate = false;
+
 function runallthis(){
 	
 	for(i = 0; i <= totalfamilies; i++){
@@ -421,40 +423,59 @@ function showthemonths(familyname){
 function checkvisit(houseid, vmonth, currentitem, housename){
 	
 	if ($("#" + currentitem + " a").hasClass("glyphicon-ok-sign")){
+		var themonthstring = $("#" + currentitem + " span").html();
+		$("#" + currentitem + " span").html('updating...');
+		//alert($("#" + currentitem ).html();
 		var visnum = Number(document.getElementById("displayvisitnum" + houseid).innerHTML);
 		//alert('yep');
 		visnum --;
 		
-		$.ajax({
-     	 	url: 'removevisit.php',
-      		type: 'post',
-     	 	data: {'thehouseid': houseid, 'thevisitmonth': vmonth},
-      		success: function(data, status) {
-		
-		  		$("#" + currentitem + " a").removeClass('glyphicon-ok-sign').addClass("glyphicon-unchecked");
-		  		$("#" + currentitem).css("color","#CCCCCC");
-				$("#" + currentitem).parent().children(".commentbutton").css("display","none");
-				$("#displayvisitnum" + houseid).html(visnum);
-				
-      		},
-		}); // end ajax call
+		if(!runningvisitupdate)
+		{
+			runningvisitupdate = true;
+			$.ajax({
+				url: 'removevisit.php',
+				type: 'post',
+				data: {'thehouseid': houseid, 'thevisitmonth': vmonth},
+				success: function(data, status) {
+			
+					$("#" + currentitem + " a").removeClass('glyphicon-ok-sign').addClass("glyphicon-unchecked");
+					$("#" + currentitem).css("color","#CCCCCC");
+					$("#" + currentitem).parent().children(".commentbutton").css("display","none");
+					$("#displayvisitnum" + houseid).html(visnum);
+					$("#" + currentitem + " span").html(themonthstring);
+					runningvisitupdate = false;
+					
+				},
+			}); // end ajax call
+		}
 	}
 	else{
+		
+		var themonthstring = $("#" + currentitem + " span").html();
+		$("#" + currentitem + " span").html('updating...');
 		var visnum = Number(document.getElementById("displayvisitnum" + houseid).innerHTML);
 		//alert('yep');
 		visnum ++;
-		$.ajax({
-     	 	url: 'addvisit.php',
-      		type: 'post',
-     	 	data: {'thehouseid': houseid, 'thevisitmonth': vmonth, 'thehousename': housename},
-      		success: function(data, status) {
 		
-		  		$("#" + currentitem + " a").removeClass('glyphicon-unchecked').addClass("glyphicon-ok-sign");
-		  		$("#" + currentitem).css("color","#5dc0b2");
-				$("#" + currentitem).parent().children(".commentbutton").css("display","block");
-				$("#displayvisitnum" + houseid).html(visnum);
-      		},
-		}); // end ajax call
+		if(!runningvisitupdate)
+		{
+			runningvisitupdate = true;
+			$.ajax({
+				url: 'addvisit.php',
+				type: 'post',
+				data: {'thehouseid': houseid, 'thevisitmonth': vmonth, 'thehousename': housename},
+				success: function(data, status) {
+			
+					$("#" + currentitem + " a").removeClass('glyphicon-unchecked').addClass("glyphicon-ok-sign");
+					$("#" + currentitem).css("color","#5dc0b2");
+					$("#" + currentitem).parent().children(".commentbutton").css("display","block");
+					$("#displayvisitnum" + houseid).html(visnum);
+					$("#" + currentitem + " span").html(themonthstring);
+					runningvisitupdate = false;
+				},
+			}); // end ajax call
+		}
 		
 	}
 	
