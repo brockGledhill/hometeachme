@@ -5,37 +5,38 @@
 
 	<h4 class="pagetitles">Add New Member</h4>
 
-	<form id="newmemform" action="addmem.php" method="post">
-		<input style="display:none;" name="thewardidname" value="{{ $wardId }}"/>
+	<form id="newmemform" action="/members/add" method="post">
+		{!! csrf_field() !!}
+		<input type="hidden" name="ward_id" value="{{ $wardId }}"/>
 
 		<div class="addcompanrow">
 			<span class="familytitle">First Name</span>
-			<input name="firstnamename" type="text"/>
+			<input name="first_name" type="text"/>
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Last Name</span>
-			<input name="lastnamename" type="text"/>
+			<input name="last_name" type="text"/>
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Spouse</span>
-			<input name="spousename" type="text" placeholder="(first name)"/>
+			<input name="spouse_name" type="text" placeholder="(first name)"/>
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Phone</span>
-			<input name="phonename" type="text"/>
+			<input name="phone" type="text"/>
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Email</span>
-			<input name="emailname" type="text"/>
+			<input name="email" type="text"/>
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Password</span>
-			<input name="passwordname" type="text"/>
+			<input name="password" type="text"/>
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Quorum</span>
 
-			<select name="quorumname">
+			<select name="quorum_id">
 				<option value="1">Elder</option>
 				<option value="2">High Priest</option>
 			</select>
@@ -52,7 +53,7 @@
 		<div class="addcompanrow">
 			<span class="familytitle">Jr Companion?</span>
 
-			<select id="jrcompid" name="jrcompname">
+			<select id="jrcompid" name="is_jr_comp">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</select>
@@ -73,21 +74,15 @@
 			<div class="mememail">{{ $family['email'] }}</div>
 			<div class="memphone">{{ $family['phone'] }}</div>
 			<div class="memrowtools">
-				<a onclick="editmember('{{ $family['id'] }}')" class="memedit glyphicon glyphicon-pencil"></a>
+				<a href="/members/edit?id={{ $family['id'] }}" class="memedit glyphicon glyphicon-pencil"></a>
+				<form id="removeMember{{ $family['id'] }}" action="/members/delete?id={{ $family['id'] }}" method="post" style="display: none;">
+					{!! csrf_field() !!}
+				</form>
 				<a onclick="removemember('{{ $family['id'] }}')" class="memdelete glyphicon glyphicon-remove"></a>
 			</div>
 		</div>
 	@endforeach
 </div>
-
-<form id="removedamember" action="removemember.php" method="post" style="display:none;">
-	<input id="memberidbox" name="memberidname" type="text" />
-	<input id="memberidbox" name="wardidname" type="text" value="{{ $wardId }}" />
-</form>
-
-<form id="editmemberform" action="editmember.php" method="post" style="display:none;">
-	<input id="membereditidbox" name="membereditname" type="text" />
-</form>
 
 <script type="text/javascript">
 
@@ -183,13 +178,7 @@ function savenewcomp(savecid){
 }
 
 function removemember(thememberid){
-	$("#memberidbox").val(thememberid);
-	$("#removedamember").submit();
-}
-
-function editmember(incomingmemberid){
-	$("#membereditidbox").val(incomingmemberid);
-	$("#editmemberform").submit();
+	$("#removeMember" + thememberid).submit();
 }
 
 

@@ -19,7 +19,6 @@
 			{!! csrf_field() !!}
 			<input name="email" type="text" placeholder="email" />
 			<input name="password" type="password" placeholder="password" />
-			<input name="remember" type="hidden" value="0" />
 
 			<button type="submit" title="login">Login</button>
 

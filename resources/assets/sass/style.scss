@@ -97,7 +97,12 @@ h4{padding-bottom: 20px; color: #814f75 !important;}
 .leftstuff{float: left; width: 380px;}
 .pagetitles{width: 100%;background-color: #eaeaea;padding: 13px;color: #FFFFFF; height: 50px; margin-top: 0;}
 #newcompform{ padding-top: 15px; padding-bottom: 20px;}
-#newmemform{ padding-top: 15px; padding-bottom: 20px; float: left;}
+#newmemform,
+#editmemform {
+  padding-top: 15px;
+  padding-bottom: 20px;
+  float: left;
+}
 .newsavebtn{  margin-left: 125px;width: 160px;margin-top: 15px;background-color: #69d8c7 !important;color: #FFFFFF !important;border: none !important;   display: block;float: left; margin-bottom: 20px !important;}
 .newchangebtn{  margin-left: 125px;margin-top: 15px;background-color: #69d8c7 !important;color: #FFFFFF !important;border: none !important;}
 .famformclass{float: left; margin-left: 10px;}

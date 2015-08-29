@@ -16,7 +16,7 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
      *
      * @var array
      */
-	protected $fillable = [
+	protected $guarded = [
 		'is_assigned',
 		'quorum_id',
 		'ward_id',
@@ -46,7 +46,7 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
 	 *
 	 * @return bool|int
 	 */
-	public function saveProfileUpdates(array $attributes = []) {
+	public function saveMember(array $attributes = []) {
 		$this->first_name = $attributes['first_name'];
 		$this->last_name = $attributes['last_name'];
 		$this->spouse_name = $attributes['spouse_name'];
@@ -60,15 +60,21 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
 		$this->phone = $phone;
 		$this->email = $attributes['email'];
 
-		$password = trim($attributes['password']);
-		if (!empty($password)) {
+		if (!empty($attributes['password'])) {
+			$password = trim($attributes['password']);
 			$this->password = Hash::make($password);
+		}
+		if (!empty($attributes['ward_id'])) {
+			$this->ward_id = $attributes['ward_id'];
 		}
 		if (!empty($attributes['quorum_id'])) {
 			$this->quorum_id = $attributes['quorum_id'];
 		}
 		if (!empty($attributes['is_admin'])) {
 			$this->is_admin = toBool($attributes['is_admin']);
+		}
+		if (isset($attributes['is_jr_comp'])) {
+			$this->is_jr_comp = toBool($attributes['is_jr_comp']);
 		}
 		return parent::save();
 	}
