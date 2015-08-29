@@ -42,7 +42,10 @@ function showthemonths(familyname){
 	$("#hiddenmonths" + familyname).toggle("slow");
 }
 
+runningvisitupdate = false;
 function checkvisit(houseid, vmonth, currentitem, housename) {
+	var themonthstring = $("#" + currentitem + " span").html();
+	$("#" + currentitem + " span").html('updating...');
 	var visnum = Number(document.getElementById("displayvisitnum" + houseid).innerHTML);
 	var url = '';
 	var success;
@@ -55,6 +58,8 @@ function checkvisit(houseid, vmonth, currentitem, housename) {
 			$("#" + currentitem + " a").parent().find('.monthlabel').removeClass('home-taught-month');
 			$("#" + currentitem).parent().children(".commentbutton").hide();
 			$("#displayvisitnum" + houseid).html(visnum);
+			$("#" + currentitem + " span").html(themonthstring);
+			runningvisitupdate = false;
 		};
 	} else {
 		++visnum;
@@ -64,18 +69,23 @@ function checkvisit(houseid, vmonth, currentitem, housename) {
 			$("#" + currentitem + " a").parent().find('.monthlabel').addClass('home-taught-month');
 			$("#" + currentitem).parent().children(".commentbutton").show();
 			$("#displayvisitnum" + houseid).html(visnum);
+			$("#" + currentitem + " span").html(themonthstring);
+			runningvisitupdate = false;
 		};
 	}
-	$.ajax({
-		url: url,
-		type: 'post',
-		data: {
-			'member_id': houseid,
-			'visit_month': vmonth,
-			'comp_id': housename
-		},
-		success: success
-	}); // end ajax call
+	if (!runningvisitupdate) {
+		runningvisitupdate = true;
+		$.ajax({
+			url: url,
+			type: 'post',
+			data: {
+				'member_id': houseid,
+				'visit_month': vmonth,
+				'comp_id': housename
+			},
+			success: success
+		}); // end ajax call
+	}
 }
 
 function monthcomment(familyid, companionshipid, themonth, year) {
