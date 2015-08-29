@@ -295,21 +295,6 @@ function editmember(incomingmemberid){
 	$("#membereditidbox").val(incomingmemberid);
 	$("#editmemberform").submit();
 }
-
-function togmonthfamily(themonth){
-	$("#hidevisfams" + themonth).toggle("slow");
-	if($("#montharrow" + themonth).hasClass("glyphicon-menu-right"))
-	{
-		$("#montharrow" + themonth).removeClass("glyphicon-menu-right");
-		$("#montharrow" + themonth).addClass("glyphicon-menu-down");
-	}
-	else{
-		$("#montharrow" + themonth).removeClass("glyphicon-menu-down");
-		$("#montharrow" + themonth).addClass("glyphicon-menu-right");
-	}
-}
-
-
 </script>
 
 </body>
