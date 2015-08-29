@@ -17,6 +17,9 @@ Route::any('/', function() {
 Route::get('/login', 'Auth\AuthController@getLogin');
 Route::post('/login', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
+Route::get('/signup', function() {
+	return view('signup');
+});
 
 Route::controller('/dashboard', 'DashboardController');
 Route::controller('/notifications', 'NotificationController');

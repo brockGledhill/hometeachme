@@ -1,16 +1,9 @@
-<?php
-session_start();
-?>
+@extends('layouts.pre_login', ['title' => 'Sign Up!'])
 
-<!doctype html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Sign-Up</title>
-</head>
-<body>
+@section('content')
+<div id="mainbox">
 	<div id="signupHeader">
-		Welcome!  Sign up below!
+		Welcome! Sign up below!
 	</div>
 	<div id="signupForm">
 		<div id="firstNameSection">
@@ -18,24 +11,24 @@ session_start();
 			<input id="firstNameInput"/>
 		</div>
 		<div>
-        	<label id="lastNameLabel" for="lastNameInput">Last Name</label>
-           <input id="lastNameInput"/>
+			<label id="lastNameLabel" for="lastNameInput">Last Name</label>
+			<input id="lastNameInput"/>
 		</div>
-       <div>
-       		<label id="phoneLabel" for="phoneInput">Phone Number</label>
-           <input id="phoneInput"/>
-       </div>
-       <div>
-       		<label id="wardLabel" for="wardInput">Ward Name</label>
-           <input id="wardInput"/>
-       </div>
-       <div>
-       		<label id="quorumLabel" for="quorumSelect">Quorum</label>
-           <select id="quorumSelect">
-           	<option>Elder</option>
-            	<option>High Priest</option>
-           </select>
-       </div>
+		<div>
+			<label id="phoneLabel" for="phoneInput">Phone Number</label>
+			<input id="phoneInput"/>
+		</div>
+		<div>
+			<label id="wardLabel" for="wardInput">Ward Name</label>
+			<input id="wardInput"/>
+		</div>
+		<div>
+			<label id="quorumLabel" for="quorumSelect">Quorum</label>
+			<select id="quorumSelect">
+				<option>Elder</option>
+				<option>High Priest</option>
+			</select>
+		</div>
 	</div>
-</body>
-</html>
+</div>
+@stop
