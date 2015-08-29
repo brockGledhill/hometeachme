@@ -30,21 +30,7 @@ class CompanionshipController extends Controller {
 		}
 
 		$data['existingHomeTeachers'] = WardCompanions::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
-		$data['existingHomeTeacherCompanion'] = [];
-		foreach ($data['existingHomeTeachers'] as $key => $homeTeachers) {
-			$data['existingHomeTeacherCompanion'][$key]['homeTeacher'][1] =  WardMember::find($homeTeachers->ht_one_id);
-			$data['existingHomeTeacherCompanion'][$key]['homeTeacher'][2] = WardMember::find($homeTeachers->ht_two_id);
-			$families =  WardCompanionshipMembers::where('companionship_id', '=', $homeTeachers->id)->get();
-			foreach ($families as $family) {
-				$taughtFamily = &$data['existingHomeTeacherCompanion'][$key]['families'][];
-				$taughtFamily = WardMember::find($family->member_id);
-				$taughtFamily['ward_companionship_member_id'] = $family->id;
-			}
-			$district = WardDistricts::find($homeTeachers->district_id);
-			if ($district) {
-				$data['existingHomeTeacherCompanion'][$key]['districtMember'] = WardMember::find($district->member_id);
-			}
-		}
+		$data['existingHomeTeacherCompanion'] = $this->getExistingHomeTeacherCompanionData($data['existingHomeTeachers']);
 
 		$checkForUnassignedMembers = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->where('is_jr_comp', '=', false)->get();
 		$data['unassignedFamilies'] = [];
@@ -66,6 +52,39 @@ class CompanionshipController extends Controller {
 		}
 
 		return view('companionships', $data);
+	}
+
+	public function getEdit() {
+		$id = Input::get('id');
+		if (empty($id)) {
+			return Redirect::back()->with('status', 'Invalid member.');
+		}
+		$data['WardMember'] = WardMember::find($id);
+		if (empty($data['WardMember']) || empty($data['WardMember']->id)) {
+			return Redirect::to('/members');
+		}
+
+		$authUser = Auth::user();
+		$data['quorumId'] = $authUser->quorum_id;
+		$data['wardId'] = $authUser->ward_id;
+
+		$data['searchResult'] = Input::get('name');
+		$data['existingHomeTeachers'] = WardCompanions::where('ward_id' ,'=', $authUser->ward_id)
+			->where('quorum_id' ,'=', $authUser->quorum_id)
+			->where(function($query) use ($id) {
+				$query->where('ht_one_id', '=', $id)->orWhere('ht_two_id', '=', $id);
+			})
+			->get();
+
+		$data['existingHomeTeacherCompanion'] = $this->getExistingHomeTeacherCompanionData($data['existingHomeTeachers']);
+		$data['families'] = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
+		$data['districtList'] = WardDistricts::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
+		$data['districtMembers'] = [];
+		foreach ($data['districtList'] as $key => $district) {
+			$data['districtMembers'][$key] = WardMember::find($district->member_id);
+		}
+
+		return view('companionships.edit', $data);
 	}
 
 	public function postAdd(Request $Request) {
@@ -108,5 +127,24 @@ class CompanionshipController extends Controller {
 			return Response::json(['success' => true, 'status' => $status]);
 		}
 		return Redirect::back()->with('status', $status);
+	}
+
+	private function getExistingHomeTeacherCompanionData($existingHomeTeachers) {
+		$existingHomeTeacherCompanion = [];
+		foreach ($existingHomeTeachers as $key => $homeTeachers) {
+			$existingHomeTeacherCompanion[$key]['homeTeacher'][1] =  WardMember::find($homeTeachers->ht_one_id);
+			$existingHomeTeacherCompanion[$key]['homeTeacher'][2] = WardMember::find($homeTeachers->ht_two_id);
+			$families =  WardCompanionshipMembers::where('companionship_id', '=', $homeTeachers->id)->get();
+			foreach ($families as $family) {
+				$taughtFamily = &$existingHomeTeacherCompanion[$key]['families'][];
+				$taughtFamily = WardMember::find($family->member_id);
+				$taughtFamily['ward_companionship_member_id'] = $family->id;
+			}
+			$district = WardDistricts::find($homeTeachers->district_id);
+			if ($district) {
+				$existingHomeTeacherCompanion[$key]['districtMember'] = WardMember::find($district->member_id);
+			}
+		}
+		return $existingHomeTeacherCompanion;
 	}
 }

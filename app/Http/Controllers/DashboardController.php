@@ -75,6 +75,7 @@ class DashboardController extends Controller {
 			}
 		}
 
+		$data['year'] = date('Y');
 		return view('dashboard', $data);
 	}
 
