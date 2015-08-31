@@ -4,6 +4,17 @@ $(function() {
 			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
 		}
 	});
+	$('.js-show-password').click(function() {
+		var $this = $(this);
+		var $input = $this.siblings('input');
+		if ('password' === $input.attr('type')) {
+			$input.attr('type', 'text');
+			$this.text('Hide Password');
+		} else {
+			$input.attr('type', 'password');
+			$this.text('Show Password');
+		}
+	});
 });
 
 function deletecomprow(compid) {

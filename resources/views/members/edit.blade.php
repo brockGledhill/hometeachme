@@ -31,7 +31,7 @@
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Password</span>
-			<a href="/members/password?id={{ $WardMember->id }}">Reset Password</a>
+			<a href="/members/password/reset?id={{ $WardMember->id }}">Reset Password</a>
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Quorum</span>

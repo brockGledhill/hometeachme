@@ -103,25 +103,21 @@ class CompanionshipController extends Controller {
 	}
 
 	public function postUpdate(Request $Request) {
-		if ($Request->isMethod('post')) {
-			$WardCompanions = WardCompanions::find(Input::get('id'));
-			$htOneId = Input::get('ht_one_id');
-			if (null !== $htOneId) {
-				$WardCompanions->ht_one_id = $htOneId;
-			} else {
-				$WardCompanions->ht_two_id = Input::get('ht_two_id');
-			}
-			$WardCompanions->update();
+		$WardCompanions = WardCompanions::find(Input::get('id'));
+		$htOneId = Input::get('ht_one_id');
+		if (null !== $htOneId) {
+			$WardCompanions->ht_one_id = $htOneId;
+		} else {
+			$WardCompanions->ht_two_id = Input::get('ht_two_id');
 		}
+		$WardCompanions->update();
 		return Redirect::back()->with('status', 'Companion Removed.');
 	}
 
 	public function postDelete(Request $Request) {
-		if ($Request->isMethod('post')) {
-			$id = Input::get('id');
-			WardCompanions::destroy($id);
-			WardCompanionshipMembers::where('companionship_id', '=', $id)->first()->delete();
-		}
+		$id = Input::get('id');
+		WardCompanions::destroy($id);
+		WardCompanionshipMembers::where('companionship_id', '=', $id)->first()->delete();
 		$status = 'Companionship Removed.';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);

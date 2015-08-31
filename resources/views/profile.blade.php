@@ -32,7 +32,7 @@
 		</div>
 		<div class="addcompanrow">
 			<span class="familytitle">Password</span>
-			<input id="passwordid" name="password" type="password" value=""/>
+			<a href="/profile/password/update">Change Password</a>
 		</div>
 
 		@if ($adminStatus)

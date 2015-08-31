@@ -35,10 +35,8 @@ class MemberController extends Controller {
 	}
 
 	public function postAdd(Request $Request) {
-		if ($Request->isMethod('post')) {
-			$WardMember = new WardMember();
-			$WardMember->saveMember(Input::get());
-		}
+		$WardMember = new WardMember();
+		$WardMember->saveMember(Input::get());
 		$status = 'Member Added!';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);
@@ -47,10 +45,8 @@ class MemberController extends Controller {
 	}
 
 	public function postUpdate(Request $Request) {
-		if ($Request->isMethod('post')) {
-			$WardMember = WardMember::find(Input::get('id'));
-			$WardMember->saveMember(Input::get());
-		}
+		$WardMember = WardMember::find(Input::get('id'));
+		$WardMember->saveMember(Input::get());
 		$status = 'Member Updated!';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);
@@ -59,9 +55,7 @@ class MemberController extends Controller {
 	}
 
 	public function postDelete(Request $Request) {
-		if ($Request->isMethod('post')) {
-			WardMember::destroy(Input::get('id'));
-		}
+		WardMember::destroy(Input::get('id'));
 		$status = 'Member Removed';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);

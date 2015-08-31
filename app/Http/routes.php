@@ -24,12 +24,14 @@ Route::get('/signup', function() {
 Route::controller('/dashboard', 'DashboardController');
 Route::controller('/notifications', 'NotificationController');
 Route::controller('/messages', 'MessageController');
+Route::controller('/profile/password', 'Profile\PasswordController');
 Route::controller('/profile', 'ProfileController');
 Route::controller('/visit', 'VisitController');
 Route::controller('/comment', 'CommentController');
 Route::controller('/companionships/districts', 'CompanionshipDistrictController');
 Route::controller('/companionships/members', 'CompanionshipMemberController');
 Route::controller('/companionships', 'CompanionshipController');
+Route::controller('/members/password', 'Members\PasswordController');
 Route::controller('/members', 'MemberController');
 Route::controller('/districts', 'DistrictController');
 Route::controller('/stats', 'StatisticsController');
