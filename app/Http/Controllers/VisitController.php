@@ -14,7 +14,7 @@ class VisitController extends Controller {
 
 	public function postAdd() {
 		$AuthUser = Auth::user();
-		$WardCompanionshipVisit = WardCompanionshipVisits::withTrashed()->where(Input::all())->first() ?: new WardCompanionshipVisits(Input::all());
+		$WardCompanionshipVisit = WardCompanionshipVisits::withTrashed()->where(Input::get())->first() ?: new WardCompanionshipVisits(Input::get());
 		$WardCompanionshipVisit->ward_id = $AuthUser->ward_id;
 		$WardCompanionshipVisit->quorum_id = $AuthUser->quorum_id;
 		$WardCompanionshipVisit->visit_year = date('Y');
@@ -32,7 +32,7 @@ class VisitController extends Controller {
 	}
 
 	public function postDelete() {
-		$WardCompanionshipVisit = WardCompanionshipVisits::first(Input::all());
+		$WardCompanionshipVisit = WardCompanionshipVisits::where(Input::get())->first();
 		$WardCompanionshipVisit->delete();
 
 		if (Request::ajax()) {

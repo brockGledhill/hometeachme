@@ -38,7 +38,7 @@
 	<input id="membereditidbox" name="membereditname" type="text"/>
 </form>
 
-<script type="text/javascript" src="/js/charts/Chart.js"></script>
+<script type="text/javascript" src="/js/chart.js"></script>
 <script type="text/javascript">
 var totalfamilies = 0;
 var menuopen = false;

@@ -37,7 +37,7 @@
 		<div onclick="showthemonths('{{ $myFamilies[$index]['family']['last_name'] }}');" class="familyline">
 			<div class="visitcontainer">
 				<div id="visitid{{ $index }}" style="display:none;">{{ $myFamilies[$index]['visitCount'] }}</div>
-				<span id="displayvisitnum{{ $family['id'] }}" class="visitnumber">{{ $myFamilies[$index]['visitCount'] }}</span>
+				<span id="displayvisitnum{{ $myFamilies[$index]['family']['id'] }}" class="visitnumber">{{ $myFamilies[$index]['visitCount'] }}</span>
 				<span class="visitnumber">/{{ date("n") }}</span>
 				<span class="visitstitle">visits</span>
 			</div>
@@ -49,7 +49,7 @@
 
 			@foreach ($months as $abbr => $month)
 				<div class="monthitem">
-					<div class="visitclickitem" onclick="checkvisit('{{ $family['id'] }}' , '{{ $abbr }}' , this.id, '{{ $companion['id'] or '' }}');"  id="{{ $abbr }}-{{ $myFamilies[$index]['family']['last_name'] }}">
+					<div class="visitclickitem" onclick="checkvisit('{{ $myFamilies[$index]['family']['id'] }}' , '{{ $abbr }}' , this.id, '{{ $companion['id'] or '' }}');"  id="{{ $abbr }}-{{ $myFamilies[$index]['family']['last_name'] }}">
 						<a class="visiticon glyphicon
 							@if (in_array($abbr, $myFamilies[$index]['visitMonth']))
 								glyphicon-ok-sign

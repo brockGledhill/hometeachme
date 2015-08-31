@@ -17,4 +17,7 @@ elixir(function(mix) {
 		'jquery/**',
 		'*.js'
 	], 'public/js/script.js');
+	 mix.scripts([
+		 'charts/Chart.js'
+	 ], 'public/js/chart.js');
 });
