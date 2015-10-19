@@ -13,23 +13,37 @@ class CommentController extends Controller {
 
 	public function postAdd(Request $Request) {
 		$WardComment = WardComments::create(array_merge(Input::all(), ['visit_year' => date('Y')]));
-		$status = 'Comment Recorded!';
+		$returnData = [
+			'success' => true,
+			'message' => 'Comment Recorded!',
+			'status' => parent::MESSAGE_SUCCESS,
+			'id' => $WardComment->id
+		];
 		if ($Request->ajax()) {
-			return Response::json(['success' => true, 'status' => $status, 'id' => $WardComment->id]);
+			return Response::json($returnData);
 		}
-		return Redirect::back()->with('status', $status);
+		return Redirect::back()->with($returnData);
 	}
 
 	public function postDelete(Request $Request) {
-		$success = WardComments::destroy(Input::get('id'));
-		if ($success) {
-			$status = 'Comment Deleted';
+		$count = WardComments::destroy(Input::get('id'));
+		if ($count > 0) {
+			$success = true;
+			$message = 'Comment Deleted';
+			$status = parent::MESSAGE_SUCCESS;
 		} else {
-			$status = 'There was a problem removing the comment...';
+			$success = false;
+			$message = 'There was a problem removing the comment...';
+			$status = parent::MESSAGE_ERROR;
 		}
+		$returnData = [
+			'success' => $success,
+			'message' => $message,
+			'status' => $status
+		];
 		if ($Request->ajax()) {
-			return Response::json(['success' => $success, 'status' => $status]);
+			return Response::json($returnData);
 		}
-		return Redirect::back()->with('status', $status);
+		return Redirect::back()->with($returnData);
 	}
 }

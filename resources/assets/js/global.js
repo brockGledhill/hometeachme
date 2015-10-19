@@ -4,6 +4,12 @@ $(function() {
 			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
 		}
 	});
+	$(document).ajaxSuccess(function(event, xhr, settings) {
+		if ('' !== xhr.responseJSON.message) {
+			console.log(xhr.responseJSON);
+			Message.display(xhr.responseJSON.status, xhr.responseJSON.message);
+		}
+	});
 	$('.js-show-password').click(function() {
 		var $this = $(this);
 		var $input = $this.siblings('input');

@@ -7,6 +7,7 @@
 	</head>
 
 	<body id="{{ $bodyId or '' }}">
+		@include('includes.banner')
 		@yield('content')
 	</body>
 </html>

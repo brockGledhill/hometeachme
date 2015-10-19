@@ -25,11 +25,24 @@ class PasswordController extends Controller {
 		if (Hash::check($data['current_password'], $AuthUser->password) && $data['new_password_1'] === $data['new_password_2']) {
 			$AuthUser->password = Hash::make($data['new_password_1']);
 			$AuthUser->save();
+			$success = true;
+			$message = 'Password Updated!';
+			$status = parent::MESSAGE_SUCCESS;
+		} else {
+			$success = false;
+			$message = 'Passwords don’t match or your current password was typed incorrectly.';
+			$status = parent::MESSAGE_ERROR;
 		}
-		$status = 'Password Updated!';
+		$returnData = [
+			'success' => $success,
+			'message' => $message,
+			'status' => $status
+		];
 		if ($Request->ajax()) {
-			return Response::json(['success' => true, 'status' => $status]);
+			return Response::json($returnData);
+		} elseif ($success) {
+			return Redirect::to('/profile')->with($returnData);
 		}
-		return Redirect::to('/profile')->with('status', $status);
+		return Redirect::back()->with($returnData);
 	}
 }

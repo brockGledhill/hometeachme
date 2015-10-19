@@ -7,6 +7,7 @@
 	</head>
 
 	<body>
+		@include('includes.banner')
 		@section('header')
 			@include('includes.header')
 		@show

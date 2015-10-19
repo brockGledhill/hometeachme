@@ -24,10 +24,14 @@ class PasswordController extends Controller {
 		$WardMember = WardMember::find(Input::get('id'));
 		$WardMember->password = Hash::make('hometeach');
 		$WardMember->save();
-		$status = 'Password Reset!';
+		$returnData = [
+			'success' => true,
+			'message' => 'Password Reset for ' . $WardMember->first_name . ' ' . $WardMember->last_name . '!',
+			'status' => parent::MESSAGE_SUCCESS
+		];
 		if ($Request->ajax()) {
-			return Response::json(['success' => true, 'status' => $status]);
+			return Response::json($returnData);
 		}
-		return Redirect::to('/members/edit?id=' . $WardMember->id)->with('status', $status);
+		return Redirect::to('/members/edit?id=' . $WardMember->id)->with($returnData);
 	}
 }
