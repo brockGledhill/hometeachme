@@ -24,14 +24,16 @@ var Comments = (function() {
 	}
 
 	function updateViewComments() {
+		var params = {
+			month: $$.month.val(),
+			year: $$.year.val()
+		};
 		$.get(
 			'/comments',
-			{
-				month: $$.month.val(),
-				year: $$.year.val()
-			},
+			params,
 			function(html) {
 				$$.container.html(html);
+				history.pushState({}, '', '/comments?' + $.param(params));
 			},
 			'html'
 		);
