@@ -5,10 +5,10 @@ var Message = (function() {
 		close: '#session-message-close',
 		message: '#session-message-message'
 	};
-	var $ = {};
+	var $$ = {};
 
 	function init() {
-		$ = Utility.setupWrappers(selectors);
+		$$ = Utility.setupWrappers(selectors);
 		attachHandlers();
 	}
 
@@ -19,26 +19,26 @@ var Message = (function() {
 	}
 
 	function show() {
-		$.banner.slideDown();
+		$$.banner.slideDown();
 	}
 
 	function hide() {
-		$.banner.slideUp(function() {
-			$.banner.removeClass(status);
+		$$.banner.slideUp(function() {
+			$$.banner.removeClass(status);
 		});
 	}
 
 	function setMessage(message) {
-		$.message.text(message);
+		$$.message.text(message);
 	}
 
 	function setStatus(newStatus) {
-		$.banner.removeClass(status).addClass(newStatus);
+		$$.banner.removeClass(status).addClass(newStatus);
 		status = newStatus;
 	}
 
 	function attachHandlers() {
-		$.close.click(function() {
+		$$.close.click(function() {
 			hide();
 		});
 	}

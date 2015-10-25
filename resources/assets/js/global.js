@@ -5,7 +5,7 @@ $(function() {
 		}
 	});
 	$(document).ajaxSuccess(function(event, xhr, settings) {
-		if ('' !== xhr.responseJSON.message) {
+		if (xhr.responseJSON && '' !== xhr.responseJSON.message) {
 			console.log(xhr.responseJSON);
 			Message.display(xhr.responseJSON.status, xhr.responseJSON.message);
 		}
@@ -45,7 +45,7 @@ function dontdelete(commentid){
 function confdelete(commentid){
 	var thedelfamily = $("#familyinput").val();
 	$.ajax({
-		url: '/comment/delete',
+		url: '/comments/delete',
 		type: 'post',
 		data: {'id': commentid},
 		success: function() {
@@ -123,7 +123,7 @@ function savedacomment() {
 	var thecurrentfamily = $("#familyinput").val();
 
 	$.ajax({
-		url: '/comment/add',
+		url: '/comments/add',
 		type: 'post',
 		data: {
 			'comment_text': $("#textcommentbox").val(),

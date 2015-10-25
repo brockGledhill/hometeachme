@@ -1,0 +1,39 @@
+.Comments {
+
+}
+
+.Comments__table {
+	margin: 15px 0;
+	width: 100%;
+}
+
+.Comments__table tr > td,
+.Comments__table tr > th {
+	padding: 5px;
+}
+
+.Comments__table thead tr {
+	border-bottom: 1px solid #ccc;
+}
+.Comments__table tbody tr:nth-child(odd) {
+	background-color: #f4f4f4;
+}
+
+.Comments__table tr > td:first-child,
+.Comments__table tr > th:first-child {
+	padding-left: 15px;
+	width: 20%;
+}
+
+.Comments__table tr > td:nth-child(2) {
+	width: 60%;
+}
+.Comments__table tr > td:last-child,
+.Comments__table tr > th:last-child {
+	padding-right: 15px;
+	width: 20%;
+}
+
+.Comments__empty {
+	margin: 15px;
+}

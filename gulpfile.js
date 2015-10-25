@@ -11,13 +11,19 @@ var elixir = require('laravel-elixir');
  |
  */
 
-elixir(function(mix) {
-    mix.sass(['**'], 'public/css/style.css');
+elixir(function (mix) {
+	mix.sass(['**'], 'public/css/style.css');
+
 	mix.scripts([
 		'jquery/**',
 		'*.js'
 	], 'public/js/script.js');
-	 mix.scripts([
-		 'charts/Chart.js'
-	 ], 'public/js/chart.js');
+
+	mix.scripts([
+		'charts/Chart.js'
+	], 'public/js/chart.js');
+
+	mix.scripts([
+		'comments/Comments.js'
+	], 'public/js/comments.js')
 });

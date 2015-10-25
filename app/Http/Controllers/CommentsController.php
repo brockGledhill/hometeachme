@@ -2,11 +2,14 @@
 namespace App\Http\Controllers;
 
 use App\WardComments;
+use App\WardCompanions;
+use App\WardMember;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 
-class CommentController extends Controller {
+class CommentsController extends Controller {
 	public function __construct() {
 		$this->middleware('auth');
 	}
