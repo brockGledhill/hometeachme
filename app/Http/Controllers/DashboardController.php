@@ -66,13 +66,16 @@ class DashboardController extends Controller {
 			'Dec' => 'December'
 		];
 
-		$data['myHomeTeachers'] = WardCompanionshipMembers::where('member_id', '=', $data['authId'])->get();
-		$data['numHomeTeachers'] = count($data['myHomeTeachers']);
-		if ($data['numHomeTeachers'] > 0) {
-			foreach ($data['myHomeTeachers'] as $key => $homeTeacher) {
-				$homeTeacherData = &$data['myHomeTeacherFamily'][$key];
-				$homeTeacherData['family'] = WardMember::find($homeTeacher['member_id']);
-			}
+		$compMemberRow = WardCompanionshipMembers::where('member_id', '=', $data['authId'])->first();
+		$compRow = WardCompanions::where('id', '=', $compMemberRow->companionship_id)->first();
+		$data['numHomeTeachers'] = 0;
+		if (!empty($compRow->ht_one_id)) {
+			$data['myHomeTeachers'][1] =  WardMember::find($compRow->ht_one_id);
+			++$data['numHomeTeachers'];
+		}
+		if (!empty($compRow->ht_two_id)) {
+			$data['myHomeTeachers'][2] =  WardMember::find($compRow->ht_two_id);
+			++$data['numHomeTeachers'];
 		}
 
 		$data['year'] = date('Y');

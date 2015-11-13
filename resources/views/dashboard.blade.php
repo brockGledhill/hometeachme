@@ -97,9 +97,9 @@
 	@forelse ($myHomeTeachers as $index => $homeTeacher)
 		<div class="familylinet">
 			<span class="htericon glyphicon glyphicon-user"></span>
-			<span class="famdisplayt">{{ $myHomeTeacherFamily[$index]['family']['first_name'] }} {{ $myHomeTeacherFamily[$index]['family']['last_name'] }}</span>
+			<span class="famdisplayt">{{ $homeTeacher->first_name }} {{ $homeTeacher->last_name }}</span>
 			<br />
-			<span class="htphonenum">{{ $myHomeTeacherFamily[$index]['family']['phone'] }}</span>
+			<span class="htphonenum">{{ $homeTeacher->phone }}</span>
 		</div>
 	@empty
 		<p class="notext">No home teachers assigned yet</p>
