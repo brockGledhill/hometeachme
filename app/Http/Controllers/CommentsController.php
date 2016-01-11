@@ -24,14 +24,14 @@ class CommentsController extends Controller {
 	public function getIndex(Request $Request) {
 		$data = [];
 		$authUser = Auth::user();
-		$year = $curYear = date('Y');
+		$year = $curYear = (int)date('Y');
 		$monthAbbr = date('M');
 		$month = date('F');
 		$data['months'] = $this->getMonths();
 		$data['monthsAbbr'] = $this->getMonthsAbbreviated();
 		$requestData = Input::all();
 		if (!empty($requestData['year'])) {
-			$year = $requestData['year'];
+			$year = (int)$requestData['year'];
 		}
 		if (!empty($requestData['month'])) {
 			$month = $data['months'][$requestData['month']];

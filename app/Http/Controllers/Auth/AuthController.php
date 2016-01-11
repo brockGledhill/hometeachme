@@ -29,7 +29,7 @@ class AuthController extends Controller {
 	/**
 	 * Create a new authentication controller instance.
 	 *
-	 * @return void
+	 * @return AuthController
 	 */
 	public function __construct() {
 		$this->middleware('guest', ['except' => 'getLogout']);
