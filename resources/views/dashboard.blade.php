@@ -62,7 +62,7 @@
 						@if (in_array($abbr, $myFamilies[$index]['visitMonth']))
 							commentbutton--show
 						@endif"
-					   onclick="monthcomment('{{ $family['id'] }}', '{{ $companion['id'] or '' }}', '{{ $abbr }}', '{{ $year }}');">Add Comment</a>
+					   onclick="monthcomment('{{ $myFamilies[$index]['family']['id'] }}', '{{ $companion['id'] or '' }}', '{{ $authId }}', '{{ $wardId }}', '{{ $abbr }}', '{{ $year }}');">Add Comment</a>
 				</div>
 			@endforeach
 

@@ -105,13 +105,13 @@ function checkvisit(houseid, vmonth, currentitem, housename) {
 	}
 }
 
-function monthcomment(familyid, companionshipid, themonth, year) {
+function monthcomment(familyid, companionshipid, memberId, wardId, themonth, year) {
 	$("#commenttitle").html(themonth + ' ' + year + ' comments');
 	$("#monthinput").val(themonth);
 	$("#companionshipinput").val(companionshipid);
 	$("#familyinput").val(familyid);
-	$("#hometeacherinput").val('{{ $authId }}');
-	$("#wardinput").val('{{ $wardId }}');
+	$("#hometeacherinput").val(memberId);
+	$("#wardinput").val(wardId);
 
 	$(".centerbox").toggle( "slide", {direction:"left"}, 700);
 	$( "#commentslidomatic" ).toggle( "slide", {direction:"right"}, 700 );
