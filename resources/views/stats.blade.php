@@ -3,7 +3,13 @@
 @section('content')
 <div class="subcenterbox">
 
-	<h4 class="pagetitles">Family Visit Totals</h4>
+	<h4 class="pagetitles">Family Visit Totals
+		<select id="viewStatsYear" name="year" onchange="window.location.href='?year=' + this.value;" class="year-spacer">
+			@for ($year = $firstYear; $year <= $nowYear; ++$year)
+				<option value="{{ $year }}" @if ($year === $selectedYear)selected="selected"@endif>{{ $year }}</option>
+			@endfor
+		</select>
+	</h4>
 
 	<div id="statscontainer">
 
