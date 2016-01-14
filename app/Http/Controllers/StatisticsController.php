@@ -41,7 +41,11 @@ class StatisticsController extends Controller {
 			->get();
 		$data['members'] = [];
 		foreach ($data['visitMonths'] as $month) {
-			$Families = WardCompanionshipVisits::where('visit_month', '=', $month['visit_month'])->where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
+			$Families = WardCompanionshipVisits::where('visit_month', '=', $month['visit_month'])
+				->where('ward_id', '=', $authUser->ward_id)
+				->where('quorum_id', '=', $authUser->quorum_id)
+				->where('visit_year', '=', $data['selectedYear'])
+				->get();
 			foreach ($Families as $Family) {
 				$data['members'][$month['visit_month']][] = WardMember::find($Family->member_id);
 			}
