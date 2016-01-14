@@ -35,3 +35,7 @@ Route::controller('/members/password', 'Members\PasswordController');
 Route::controller('/members', 'MemberController');
 Route::controller('/districts', 'DistrictController');
 Route::controller('/stats', 'StatisticsController');
+
+Route::group(['prefix' => 'hooks'], function() {
+	Route::post('pr', 'Hooks\PullRequestController@postPullRequest');
+});
