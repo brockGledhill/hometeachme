@@ -4,9 +4,9 @@ $(function() {
 			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
 		}
 	});
+	//On successful ajax requests, show the banner if there is a message and a status.
 	$(document).ajaxSuccess(function(event, xhr, settings) {
-		if (xhr.responseJSON && '' !== xhr.responseJSON.message) {
-			console.log(xhr.responseJSON);
+		if (xhr.responseJSON && xhr.responseJSON.message && '' !== xhr.responseJSON.message && xhr.responseJSON.status && '' !== xhr.responseJSON.status) {
 			Message.display(xhr.responseJSON.status, xhr.responseJSON.message);
 		}
 	});
