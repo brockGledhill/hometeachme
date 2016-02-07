@@ -67,6 +67,7 @@ class DashboardController extends Controller {
 		];
 
 		$compMemberRow = WardCompanionshipMembers::where('member_id', '=', $data['authId'])->first();
+		$data['myHomeTeachers'] = [];
 		if ($compMemberRow) {
 			$compRow = WardCompanions::where('id', '=', $compMemberRow->companionship_id)->first();
 			$data['numHomeTeachers'] = 0;
