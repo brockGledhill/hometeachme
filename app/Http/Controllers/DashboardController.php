@@ -67,15 +67,17 @@ class DashboardController extends Controller {
 		];
 
 		$compMemberRow = WardCompanionshipMembers::where('member_id', '=', $data['authId'])->first();
-		$compRow = WardCompanions::where('id', '=', $compMemberRow->companionship_id)->first();
-		$data['numHomeTeachers'] = 0;
-		if (!empty($compRow->ht_one_id)) {
-			$data['myHomeTeachers'][1] =  WardMember::find($compRow->ht_one_id);
-			++$data['numHomeTeachers'];
-		}
-		if (!empty($compRow->ht_two_id)) {
-			$data['myHomeTeachers'][2] =  WardMember::find($compRow->ht_two_id);
-			++$data['numHomeTeachers'];
+		if ($compMemberRow) {
+			$compRow = WardCompanions::where('id', '=', $compMemberRow->companionship_id)->first();
+			$data['numHomeTeachers'] = 0;
+			if (!empty($compRow->ht_one_id)) {
+				$data['myHomeTeachers'][1] = WardMember::find($compRow->ht_one_id);
+				++$data['numHomeTeachers'];
+			}
+			if (!empty($compRow->ht_two_id)) {
+				$data['myHomeTeachers'][2] = WardMember::find($compRow->ht_two_id);
+				++$data['numHomeTeachers'];
+			}
 		}
 
 		$data['year'] = date('Y');
