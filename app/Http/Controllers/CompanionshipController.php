@@ -131,6 +131,7 @@ class CompanionshipController extends Controller {
 			$existingHomeTeacherCompanion[$key]['homeTeacher'][1] =  WardMember::find($homeTeachers->ht_one_id);
 			$existingHomeTeacherCompanion[$key]['homeTeacher'][2] = WardMember::find($homeTeachers->ht_two_id);
 			$families =  WardCompanionshipMembers::where('companionship_id', '=', $homeTeachers->id)->get();
+			$existingHomeTeacherCompanion[$key]['families'] = [];
 			foreach ($families as $family) {
 				$taughtFamily = &$existingHomeTeacherCompanion[$key]['families'][];
 				$taughtFamily = WardMember::find($family->member_id);
