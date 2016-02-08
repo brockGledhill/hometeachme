@@ -23,10 +23,12 @@ class DashboardController extends Controller {
 
 		$WardCompanion = WardCompanions::where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId'])->first();
 
-		if (!empty($WardCompanion) && $WardCompanion->ht_one_id == $data['authId']) {
-			$data['companion'] = WardMember::find($WardCompanion->ht_two_id);
-		} else {
-			$data['companion'] = WardMember::find($WardCompanion->ht_one_id);
+		if (!empty($WardCompanion)) {
+			if ($WardCompanion->ht_one_id == $data['authId']) {
+				$data['companion'] = WardMember::find($WardCompanion->ht_two_id);
+			} else {
+				$data['companion'] = WardMember::find($WardCompanion->ht_one_id);
+			}
 		}
 		if (!empty($data['companion'])) {
 			$data['companionName'] = $data['companion']->first_name . ' ' . $data['companion']->last_name;
