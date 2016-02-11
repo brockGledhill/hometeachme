@@ -1,14 +1,35 @@
 <?php
 namespace App\Http\ViewComposers;
 
+use app\Http\Models\Member;
+use Illuminate\Auth\AuthManager;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
 
 class ViewComposer {
+	/**
+	 * @var Member
+	 */
+	private $authUser;
+
+	/**
+	 * ViewComposer constructor.
+	 *
+	 * @param AuthManager $auth The auth manager
+	 */
+	public function __construct(AuthManager $auth) {
+		$this->authUser = $auth->user();
+	}
+
+	/**
+	 * Compose
+	 *
+	 * @param View $view The view
+	 *
+	 * @return void
+	 */
 	public function compose(View $view) {
-		$authUser = Auth::user();
-		if ($authUser) {
-			$view->with('adminStatus', $authUser->isAdmin());
+		if ($this->authUser) {
+			$view->with('adminStatus', $this->authUser->isAdmin);
 		}
 	}
 }

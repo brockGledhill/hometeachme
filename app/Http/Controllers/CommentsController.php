@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\WardComments;
+use App\Http\Models\Comment;
 use App\WardCompanions;
-use App\WardMember;
+use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
@@ -37,16 +37,16 @@ class CommentsController extends Controller {
 			$month = $data['months'][$requestData['month']];
 			$monthAbbr = $data['monthsAbbr'][$requestData['month']];
 		}
-		$data['comments'] = WardComments::where('ward_id', '=', $authUser->ward_id)
+		$data['comments'] = Comment::where('ward_id', '=', $authUser->ward_id)
 										->where('visit_month', '=', $monthAbbr)
 										->where('visit_year', '=', $year)
 										->get();
 		foreach ($data['comments'] as $key => $comment) {
-			$data['families'][$key] = WardMember::where('id', '=', $comment->family_id)->first();
+			$data['families'][$key] = Member::where('id', '=', $comment->family_id)->first();
 			$companions = WardCompanions::where('id', '=', $comment->companion_id)->first();
 			if ($companions) {
-				$data['homeTeachers'][$key][1] = WardMember::where('id', '=', $companions->ht_one_id)->first();
-				$data['homeTeachers'][$key][2] = WardMember::where('id', '=', $companions->ht_two_id)->first();
+				$data['homeTeachers'][$key][1] = Member::where('id', '=', $companions->ht_one_id)->first();
+				$data['homeTeachers'][$key][2] = Member::where('id', '=', $companions->ht_two_id)->first();
 			}
 		}
 		$data['firstYear'] = 2015;
@@ -60,7 +60,7 @@ class CommentsController extends Controller {
 	}
 
 	public function postAdd(Request $Request) {
-		$WardComment = WardComments::create(array_merge(Input::all(), ['visit_year' => date('Y'), 'ward_id' => Auth::user()->ward_id]));
+		$WardComment = Comment::create(array_merge(Input::all(), ['visit_year' => date('Y'), 'ward_id' => Auth::user()->ward_id]));
 		$returnData = [
 			'success' => true,
 			'message' => 'Comment Recorded!',
@@ -74,7 +74,7 @@ class CommentsController extends Controller {
 	}
 
 	public function postDelete(Request $Request) {
-		$count = WardComments::destroy(Input::get('id'));
+		$count = Comment::destroy(Input::get('id'));
 		if ($count > 0) {
 			$success = true;
 			$message = 'Comment Deleted';

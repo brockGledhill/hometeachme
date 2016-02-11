@@ -1,10 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquence\Database\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class WardDistricts extends Model {
+class District extends Model {
+	use SoftDeletes;
+
 	/**
 	 * The attributes that are mass assignable.
 	 *

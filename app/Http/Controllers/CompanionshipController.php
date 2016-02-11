@@ -3,8 +3,8 @@ namespace app\Http\Controllers;
 
 use App\WardCompanions;
 use App\WardCompanionshipMembers;
-use App\WardDistricts;
-use App\WardMember;
+use App\Http\Models\District;
+use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
@@ -21,25 +21,25 @@ class CompanionshipController extends Controller {
 		$data['quorumId'] = $authUser->quorum_id;
 		$data['wardId'] = $authUser->ward_id;
 
-		$data['families'] = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
+		$data['families'] = Member::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
 		$data['numOfFamilies'] = count($data['families']);
-		$data['districtList'] = WardDistricts::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
+		$data['districtList'] = District::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
 		$data['districtMembers'] = [];
 		foreach ($data['districtList'] as $key => $district) {
-			$data['districtMembers'][$key] = WardMember::find($district->member_id);
+			$data['districtMembers'][$key] = Member::find($district->member_id);
 		}
 
 		$data['existingHomeTeachers'] = WardCompanions::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
 		$data['existingHomeTeacherCompanion'] = $this->getExistingHomeTeacherCompanionData($data['existingHomeTeachers']);
 
-		$checkForUnassignedMembers = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->where('is_jr_comp', '=', false)->get();
+		$checkForUnassignedMembers = Member::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->where('is_jr_comp', '=', false)->get();
 		$data['unassignedFamilies'] = [];
 		foreach ($checkForUnassignedMembers as $unassigned) {
 			$companionshipFamily = WardCompanionshipMembers::where('member_id', '=', $unassigned->id)->get();
 
 			// If family doesn't exist in the comps relationship table
 			if ($companionshipFamily->isEmpty()) {
-				$data['unassignedFamilies'][] = WardMember::find($unassigned->id);
+				$data['unassignedFamilies'][] = Member::find($unassigned->id);
 			}
 		}
 
@@ -47,7 +47,7 @@ class CompanionshipController extends Controller {
 		foreach ($data['families'] as $family) {
 			$companionshipFamily = WardCompanions::where('ht_one_id', '=', $family->id)->orWhere('ht_two_id', '=', $family->id)->first();
 			if (empty($companionshipFamily) || empty($companionshipFamily->id)) {
-				$data['unassignedHomeTeachers'][] = WardMember::find($family->id);
+				$data['unassignedHomeTeachers'][] = Member::find($family->id);
 			}
 		}
 
@@ -59,7 +59,7 @@ class CompanionshipController extends Controller {
 		if (empty($id)) {
 			return Redirect::back()->with('status', 'Invalid member.');
 		}
-		$data['WardMember'] = WardMember::find($id);
+		$data['Member'] = Member::find($id);
 		if (empty($data['WardMember']) || empty($data['WardMember']->id)) {
 			return Redirect::to('/members');
 		}
@@ -77,11 +77,11 @@ class CompanionshipController extends Controller {
 			->get();
 
 		$data['existingHomeTeacherCompanion'] = $this->getExistingHomeTeacherCompanionData($data['existingHomeTeachers']);
-		$data['families'] = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
-		$data['districtList'] = WardDistricts::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
+		$data['families'] = Member::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
+		$data['districtList'] = District::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
 		$data['districtMembers'] = [];
 		foreach ($data['districtList'] as $key => $district) {
-			$data['districtMembers'][$key] = WardMember::find($district->member_id);
+			$data['districtMembers'][$key] = Member::find($district->member_id);
 		}
 
 		return view('companionships.edit', $data);
@@ -128,18 +128,18 @@ class CompanionshipController extends Controller {
 	private function getExistingHomeTeacherCompanionData($existingHomeTeachers) {
 		$existingHomeTeacherCompanion = [];
 		foreach ($existingHomeTeachers as $key => $homeTeachers) {
-			$existingHomeTeacherCompanion[$key]['homeTeacher'][1] =  WardMember::find($homeTeachers->ht_one_id);
-			$existingHomeTeacherCompanion[$key]['homeTeacher'][2] = WardMember::find($homeTeachers->ht_two_id);
+			$existingHomeTeacherCompanion[$key]['homeTeacher'][1] =  Member::find($homeTeachers->ht_one_id);
+			$existingHomeTeacherCompanion[$key]['homeTeacher'][2] = Member::find($homeTeachers->ht_two_id);
 			$families =  WardCompanionshipMembers::where('companionship_id', '=', $homeTeachers->id)->get();
 			$existingHomeTeacherCompanion[$key]['families'] = [];
 			foreach ($families as $family) {
 				$taughtFamily = &$existingHomeTeacherCompanion[$key]['families'][];
-				$taughtFamily = WardMember::find($family->member_id);
+				$taughtFamily = Member::find($family->member_id);
 				$taughtFamily['ward_companionship_member_id'] = $family->id;
 			}
-			$district = WardDistricts::find($homeTeachers->district_id);
+			$district = District::find($homeTeachers->district_id);
 			if ($district) {
-				$existingHomeTeacherCompanion[$key]['districtMember'] = WardMember::find($district->member_id);
+				$existingHomeTeacherCompanion[$key]['districtMember'] = Member::find($district->member_id);
 			}
 		}
 		return $existingHomeTeacherCompanion;

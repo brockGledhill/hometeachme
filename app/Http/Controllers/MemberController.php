@@ -1,7 +1,7 @@
 <?php
 namespace app\Http\Controllers;
 
-use App\WardMember;
+use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
@@ -17,7 +17,7 @@ class MemberController extends Controller {
 		$authUser = Auth::user();
 		$data['quorumId'] = $authUser->quorum_id;
 		$data['wardId'] = $authUser->ward_id;
-		$data['families'] = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
+		$data['families'] = Member::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
 		return view('members', $data);
 	}
 
@@ -26,17 +26,17 @@ class MemberController extends Controller {
 		if (empty($id)) {
 			return Redirect::back()->with('error', 'Invalid Member Requested');
 		}
-		$WardMember = WardMember::find($id);
-		if (empty($WardMember->id)) {
+		$Member = Member::find($id);
+		if (empty($Member->id)) {
 			return Redirect::back()->with('error', 'Invalid Member Requested');
 		}
-		$data['WardMember'] = $WardMember;
+		$data['WardMember'] = $Member;
 		return view('members.edit', $data);
 	}
 
 	public function postAdd(Request $Request) {
-		$WardMember = new WardMember();
-		$WardMember->saveMember(Input::get());
+		$Member = new Member();
+		$Member->saveMember(Input::get());
 		$status = 'Member Added!';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);
@@ -45,8 +45,8 @@ class MemberController extends Controller {
 	}
 
 	public function postUpdate(Request $Request) {
-		$WardMember = WardMember::find(Input::get('id'));
-		$WardMember->saveMember(Input::get());
+		$Member = Member::find(Input::get('id'));
+		$Member->saveMember(Input::get());
 		$status = 'Member Updated!';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);
@@ -55,7 +55,7 @@ class MemberController extends Controller {
 	}
 
 	public function postDelete(Request $Request) {
-		WardMember::destroy(Input::get('id'));
+		Member::destroy(Input::get('id'));
 		$status = 'Member Removed';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);

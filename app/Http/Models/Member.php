@@ -1,15 +1,17 @@
 <?php
-namespace App;
 
+namespace App\Http\Models;
+
+use Eloquence\Database\Model;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 
-class WardMember extends Model implements AuthenticatableContract, CanResetPasswordContract {
-	use Authenticatable, CanResetPassword;
+class Member extends Model implements AuthenticatableContract, CanResetPasswordContract {
+	use Authenticatable, CanResetPassword, SoftDeletes;
 
 	/**
      * The attributes that are mass assignable.
@@ -29,15 +31,6 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
-
-	/**
-	 * Check to see if the WardMember is an admin
-	 *
-	 * @return boolean
-	 */
-	public function isAdmin() {
-		return $this->is_admin;
-	}
 
 	/**
 	 * Save a new, or update an existing ward member (singular)

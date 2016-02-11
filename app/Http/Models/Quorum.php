@@ -5,7 +5,7 @@ namespace App\Http\Models;
 use Eloquence\Database\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Ward extends Model {
+class Quorum extends Model {
 	use SoftDeletes;
 
 	/**
