@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquence\Database\Model;
 
-class WardDistricts extends Model {
+class District extends Model {
 	/**
 	 * The attributes that are mass assignable.
 	 *

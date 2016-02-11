@@ -2,7 +2,7 @@
 namespace app\Http\Controllers;
 
 use App\WardCompanionshipVisits;
-use App\WardMember;
+use App\Http\Models\WardMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

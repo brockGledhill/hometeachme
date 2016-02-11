@@ -2,7 +2,7 @@
 
 namespace app\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquence\Database\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ward extends Model {

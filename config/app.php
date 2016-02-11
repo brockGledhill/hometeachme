@@ -143,7 +143,9 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        \App\Providers\ComposerServiceProvider::class
+        App\Providers\ComposerServiceProvider::class,
+
+        Eloquence\EloquenceServiceProvider::class
     ],
 
     /*

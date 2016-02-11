@@ -1,8 +1,8 @@
 <?php
 namespace app\Http\Controllers;
 
-use App\WardDistricts;
-use App\WardMember;
+use App\Http\Models\District;
+use App\Http\Models\WardMember;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
@@ -17,7 +17,7 @@ class DistrictController extends Controller {
 		$data['quorumId'] = $authUser->quorum_id;
 		$data['wardId'] = $authUser->ward_id;
 		$data['families'] = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
-		$districts = WardDistricts::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
+		$districts = District::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
 		$data['districts'] = [];
 		foreach ($districts as $district) {
 			$data['districts'][] = WardMember::find($district->member_id);
@@ -26,7 +26,7 @@ class DistrictController extends Controller {
 	}
 
 	public function postIndex() {
-		WardDistricts::create(Input::all());
+		District::create(Input::all());
 		return Redirect::back()->with('status', 'District Added!');
 	}
 }

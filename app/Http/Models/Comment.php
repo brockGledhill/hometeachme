@@ -1,10 +1,10 @@
 <?php
-namespace App;
+namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquence\Database\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class WardComments extends Model {
+class Comment extends Model {
 	use SoftDeletes;
 
 	/**

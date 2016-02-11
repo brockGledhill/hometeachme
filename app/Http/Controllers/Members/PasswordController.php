@@ -2,7 +2,7 @@
 namespace app\Http\Controllers\Members;
 
 use App\Http\Controllers\Controller;
-use App\WardMember;
+use App\Http\Models\WardMember;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;

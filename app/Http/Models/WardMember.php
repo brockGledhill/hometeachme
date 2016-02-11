@@ -1,8 +1,8 @@
 <?php
-namespace App;
+namespace app\Http\Models;
 
+use Eloquence\Database\Model;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -29,15 +29,6 @@ class WardMember extends Model implements AuthenticatableContract, CanResetPassw
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
-
-	/**
-	 * Check to see if the WardMember is an admin
-	 *
-	 * @return boolean
-	 */
-	public function isAdmin() {
-		return $this->is_admin;
-	}
 
 	/**
 	 * Save a new, or update an existing ward member (singular)

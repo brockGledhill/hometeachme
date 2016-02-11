@@ -3,8 +3,8 @@ namespace app\Http\Controllers;
 
 use App\WardCompanions;
 use App\WardCompanionshipMembers;
-use App\WardDistricts;
-use App\WardMember;
+use App\Http\Models\District;
+use App\Http\Models\WardMember;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
@@ -23,7 +23,7 @@ class CompanionshipController extends Controller {
 
 		$data['families'] = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
 		$data['numOfFamilies'] = count($data['families']);
-		$data['districtList'] = WardDistricts::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
+		$data['districtList'] = District::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
 		$data['districtMembers'] = [];
 		foreach ($data['districtList'] as $key => $district) {
 			$data['districtMembers'][$key] = WardMember::find($district->member_id);
@@ -78,7 +78,7 @@ class CompanionshipController extends Controller {
 
 		$data['existingHomeTeacherCompanion'] = $this->getExistingHomeTeacherCompanionData($data['existingHomeTeachers']);
 		$data['families'] = WardMember::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->orderBy('last_name', 'asc')->get();
-		$data['districtList'] = WardDistricts::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
+		$data['districtList'] = District::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
 		$data['districtMembers'] = [];
 		foreach ($data['districtList'] as $key => $district) {
 			$data['districtMembers'][$key] = WardMember::find($district->member_id);
@@ -137,7 +137,7 @@ class CompanionshipController extends Controller {
 				$taughtFamily = WardMember::find($family->member_id);
 				$taughtFamily['ward_companionship_member_id'] = $family->id;
 			}
-			$district = WardDistricts::find($homeTeachers->district_id);
+			$district = District::find($homeTeachers->district_id);
 			if ($district) {
 				$existingHomeTeacherCompanion[$key]['districtMember'] = WardMember::find($district->member_id);
 			}

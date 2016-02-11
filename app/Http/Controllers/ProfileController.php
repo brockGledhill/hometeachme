@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\WardMember;
+use App\Http\Models\WardMember;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;

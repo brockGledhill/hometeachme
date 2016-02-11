@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'model' => App\WardMember::class,
+    'model' => App\Http\Models\WardMember::class,
 
     /*
     |--------------------------------------------------------------------------

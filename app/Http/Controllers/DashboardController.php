@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\WardComments;
+use App\Http\Models\Comment;
 use App\WardCompanions;
 use App\WardCompanionshipMembers;
 use App\WardCompanionshipVisits;
-use App\WardMember;
+use App\Http\Models\WardMember;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller {
@@ -50,7 +50,7 @@ class DashboardController extends Controller {
 				}
 				$familyData['visitCount'] = count($visits);
 				$data['totalVisitCount'] += $familyData['visitCount'];
-				$familyData['comments'] = WardComments::where('member_id', '=', $data['authId'])->where('family_id', '=', $family['member_id'])->get();
+				$familyData['comments'] = Comment::where('member_id', '=', $data['authId'])->where('family_id', '=', $family['member_id'])->get();
 			}
 		}
 
