@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Models\WardMember;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
@@ -17,8 +16,8 @@ class ProfileController extends Controller {
 	}
 
 	public function postIndex() {
-		$WardMember = Auth::user();
-		$WardMember->saveMember(Input::all());
+		$Member = Auth::user();
+		$Member->saveMember(Input::all());
 		return Redirect::back()->with('status', 'Profile Updated!');
 	}
 }

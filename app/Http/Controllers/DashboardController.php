@@ -5,7 +5,7 @@ use App\Http\Models\Comment;
 use App\WardCompanions;
 use App\WardCompanionshipMembers;
 use App\WardCompanionshipVisits;
-use App\Http\Models\WardMember;
+use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller {
@@ -26,9 +26,9 @@ class DashboardController extends Controller {
 		$data['allFamilies'] = [];
 		if (!empty($WardCompanion)) {
 			if ($WardCompanion->ht_one_id == $data['authId']) {
-				$data['companion'] = WardMember::find($WardCompanion->ht_two_id);
+				$data['companion'] = Member::find($WardCompanion->ht_two_id);
 			} else {
-				$data['companion'] = WardMember::find($WardCompanion->ht_one_id);
+				$data['companion'] = Member::find($WardCompanion->ht_one_id);
 			}
 			$data['allFamilies'] = WardCompanionshipMembers::where('companionship_id', '=', $WardCompanion->id)->get();
 		}
@@ -42,7 +42,7 @@ class DashboardController extends Controller {
 		if ($data['numFamilies'] > 0) {
 			foreach ($data['allFamilies'] as $key => $family) {
 				$familyData = &$data['myFamilies'][$key];
-				$familyData['family'] = WardMember::find($family['member_id']);
+				$familyData['family'] = Member::find($family['member_id']);
 				$familyData['visitMonth'] = [];
 				$visits = WardCompanionshipVisits::where('member_id', '=', $family['member_id'])->where('visit_year', '=', date('Y'))->get();
 				foreach ($visits as $visit) {
@@ -75,11 +75,11 @@ class DashboardController extends Controller {
 			$compRow = WardCompanions::where('id', '=', $compMemberRow->companionship_id)->first();
 			$data['numHomeTeachers'] = 0;
 			if (!empty($compRow->ht_one_id)) {
-				$data['myHomeTeachers'][1] = WardMember::find($compRow->ht_one_id);
+				$data['myHomeTeachers'][1] = Member::find($compRow->ht_one_id);
 				++$data['numHomeTeachers'];
 			}
 			if (!empty($compRow->ht_two_id)) {
-				$data['myHomeTeachers'][2] = WardMember::find($compRow->ht_two_id);
+				$data['myHomeTeachers'][2] = Member::find($compRow->ht_two_id);
 				++$data['numHomeTeachers'];
 			}
 		}

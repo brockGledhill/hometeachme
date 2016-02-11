@@ -2,7 +2,7 @@
 namespace app\Http\Controllers;
 
 use App\WardCompanionshipVisits;
-use App\Http\Models\WardMember;
+use App\Http\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +47,7 @@ class StatisticsController extends Controller {
 				->where('visit_year', '=', $data['selectedYear'])
 				->get();
 			foreach ($Families as $Family) {
-				$data['members'][$month['visit_month']][] = WardMember::find($Family->member_id);
+				$data['members'][$month['visit_month']][] = Member::find($Family->member_id);
 			}
 		}
 

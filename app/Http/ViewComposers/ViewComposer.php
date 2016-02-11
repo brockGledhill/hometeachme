@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\ViewComposers;
 
-use app\Http\Models\WardMember;
+use app\Http\Models\Member;
 use Illuminate\Auth\AuthManager;
 use Illuminate\View\View;
 
 class ViewComposer {
 	/**
-	 * @var WardMember
+	 * @var Member
 	 */
 	private $authUser;
 

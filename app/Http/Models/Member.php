@@ -1,5 +1,6 @@
 <?php
-namespace app\Http\Models;
+
+namespace App\Http\Models;
 
 use Eloquence\Database\Model;
 use Illuminate\Auth\Authenticatable;
@@ -9,7 +10,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 
-class WardMember extends Model implements AuthenticatableContract, CanResetPasswordContract {
+class Member extends Model implements AuthenticatableContract, CanResetPasswordContract {
 	use Authenticatable, CanResetPassword, SoftDeletes;
 
 	/**
