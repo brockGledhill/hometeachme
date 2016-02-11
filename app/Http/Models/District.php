@@ -3,8 +3,11 @@
 namespace App\Http\Models;
 
 use Eloquence\Database\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class District extends Model {
+	use SoftDeletes;
+
 	/**
 	 * The attributes that are mass assignable.
 	 *

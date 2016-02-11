@@ -68,7 +68,7 @@
 
 		</div>
 
-		<div style="display:none;" id="family{{ $family['id'] }}">
+		<div style="display:none;" id="family{{ $myFamilies[$index]['family']['id'] }}">
 			@foreach ($myFamilies[$index]['comments'] as $comment)
 				<div id="fullcommentrow{{ $comment['id'] }}" class="famcommentrow">
 					<div class="commentcont">

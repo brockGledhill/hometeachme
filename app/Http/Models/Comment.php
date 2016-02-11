@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Models;
 
 use Eloquence\Database\Model;
