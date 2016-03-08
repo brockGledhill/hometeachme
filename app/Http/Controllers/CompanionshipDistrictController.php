@@ -1,23 +1,27 @@
 <?php
 namespace app\Http\Controllers;
 
-use App\WardCompanions;
+use App\Http\Models\Companionship;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request;
 
 class CompanionshipDistrictController extends Controller {
+	/**
+	 * CompanionshipDistrictController constructor.
+	 */
 	public function __construct() {
 		$this->middleware('auth');
 	}
 
+	/**
+	 * Post Update
+	 *
+	 * @return Redirect
+	 */
 	public function postUpdate() {
-
-		if (Request::isMethod('post')) {
-			$WardCompanions = WardCompanions::find(Input::get('id'));
-			$WardCompanions->district_id = Input::get('district_id');
-			$WardCompanions->update();
-		}
+		$Companionship = Companionship::find(Input::get('id'));
+		$Companionship->district_id = Input::get('district_id');
+		$Companionship->update();
 		return Redirect::back()->with('status', 'Companionship District Removed.');
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Http\Models\Comment;
-use App\WardCompanions;
+use App\Http\Models\Companionship;
 use App\WardCompanionshipMembers;
 use App\WardCompanionshipVisits;
 use App\Http\Models\Member;
@@ -21,7 +21,7 @@ class DashboardController extends Controller {
 		$data['authId'] = $authUser->id;
 		$data['wardId'] = $authUser->ward_id;
 
-		$WardCompanion = WardCompanions::where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId'])->first();
+		$WardCompanion = Companionship::where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId'])->first();
 
 		$data['allFamilies'] = [];
 		if (!empty($WardCompanion)) {
@@ -50,7 +50,11 @@ class DashboardController extends Controller {
 				}
 				$familyData['visitCount'] = count($visits);
 				$data['totalVisitCount'] += $familyData['visitCount'];
-				$familyData['comments'] = Comment::where('member_id', '=', $data['authId'])->where('family_id', '=', $family['member_id'])->get();
+				$familyData['comments'] = Comment::whereHas('companionship', function($query) use ($data) {
+						$query->where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId']);
+					})
+					->where('family_id', '=', $family['member_id'])
+					->get();
 			}
 		}
 
@@ -72,7 +76,7 @@ class DashboardController extends Controller {
 		$compMemberRow = WardCompanionshipMembers::where('member_id', '=', $data['authId'])->first();
 		$data['myHomeTeachers'] = [];
 		if ($compMemberRow) {
-			$compRow = WardCompanions::where('id', '=', $compMemberRow->companionship_id)->first();
+			$compRow = Companionship::where('id', '=', $compMemberRow->companionship_id)->first();
 			$data['numHomeTeachers'] = 0;
 			if (!empty($compRow->ht_one_id)) {
 				$data['myHomeTeachers'][1] = Member::find($compRow->ht_one_id);

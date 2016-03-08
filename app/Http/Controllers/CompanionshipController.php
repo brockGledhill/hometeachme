@@ -1,7 +1,7 @@
 <?php
 namespace app\Http\Controllers;
 
-use App\WardCompanions;
+use App\Http\Models\Companionship;
 use App\WardCompanionshipMembers;
 use App\Http\Models\District;
 use App\Http\Models\Member;
@@ -29,10 +29,15 @@ class CompanionshipController extends Controller {
 			$data['districtMembers'][$key] = Member::find($district->member_id);
 		}
 
-		$data['existingHomeTeachers'] = WardCompanions::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->get();
+		$data['existingHomeTeachers'] = Companionship::select('companionships.*')
+			->join('members', 'companionships.ht_one_id', '=', 'members.id')
+			->where('companionships.ward_id', '=', $authUser->wardId)
+			->where('companionships.quorum_id', '=', $authUser->quorumId)
+			->orderBy('members.last_name', 'ASC')
+			->get();
 		$data['existingHomeTeacherCompanion'] = $this->getExistingHomeTeacherCompanionData($data['existingHomeTeachers']);
 
-		$checkForUnassignedMembers = Member::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorum_id)->where('is_jr_comp', '=', false)->get();
+		$checkForUnassignedMembers = Member::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorumId)->where('is_jr_comp', '=', false)->get();
 		$data['unassignedFamilies'] = [];
 		foreach ($checkForUnassignedMembers as $unassigned) {
 			$companionshipFamily = WardCompanionshipMembers::where('member_id', '=', $unassigned->id)->get();
@@ -45,7 +50,7 @@ class CompanionshipController extends Controller {
 
 		$data['unassignedHomeTeachers'] = [];
 		foreach ($data['families'] as $family) {
-			$companionshipFamily = WardCompanions::where('ht_one_id', '=', $family->id)->orWhere('ht_two_id', '=', $family->id)->first();
+			$companionshipFamily = Companionship::where('ht_one_id', '=', $family->id)->orWhere('ht_two_id', '=', $family->id)->first();
 			if (empty($companionshipFamily) || empty($companionshipFamily->id)) {
 				$data['unassignedHomeTeachers'][] = Member::find($family->id);
 			}
@@ -69,7 +74,7 @@ class CompanionshipController extends Controller {
 		$data['wardId'] = $authUser->ward_id;
 
 		$data['searchResult'] = Input::get('name');
-		$data['existingHomeTeachers'] = WardCompanions::where('ward_id' ,'=', $authUser->ward_id)
+		$data['existingHomeTeachers'] = Companionship::where('ward_id' ,'=', $authUser->ward_id)
 			->where('quorum_id' ,'=', $authUser->quorum_id)
 			->where(function($query) use ($id) {
 				$query->where('ht_one_id', '=', $id)->orWhere('ht_two_id', '=', $id);
@@ -88,11 +93,11 @@ class CompanionshipController extends Controller {
 	}
 
 	public function postAdd(Request $Request) {
-		$WardCompanions = WardCompanions::create(Input::except('member_id'));
+		$Companionship = Companionship::create(Input::except('member_id'));
 		foreach (Input::get('member_id') as $memberId) {
 			$WardCompanionshipMembers = new WardCompanionshipMembers();
 			$WardCompanionshipMembers->member_id = $memberId;
-			$WardCompanionshipMembers->companionship_id = $WardCompanions->id;
+			$WardCompanionshipMembers->companionship_id = $Companionship->id;
 			$WardCompanionshipMembers->save();
 		}
 		$status = 'Companionship Added With Families!';
@@ -103,20 +108,35 @@ class CompanionshipController extends Controller {
 	}
 
 	public function postUpdate(Request $Request) {
-		$WardCompanions = WardCompanions::find(Input::get('id'));
-		$htOneId = Input::get('ht_one_id');
-		if (null !== $htOneId) {
-			$WardCompanions->ht_one_id = $htOneId;
+		$request = $Request->all();
+		$Companionship = Companionship::find($request['id']);
+
+		$NewCompanionship = $Companionship->replicate();
+		if (isset($request['ht_one_id'])) {
+			$NewCompanionship->htOneId = empty($request['ht_one_id']) ? null : $request['ht_one_id'];
+		} elseif (isset($request['ht_two_id'])) {
+			$NewCompanionship->htTwoId = empty($request['ht_two_id']) ? null : $request['ht_two_id'];
 		} else {
-			$WardCompanions->ht_two_id = Input::get('ht_two_id');
+			return Redirect::back()->with('status', 'Issue updating the companionship.');
 		}
-		$WardCompanions->update();
-		return Redirect::back()->with('status', 'Companion Removed.');
+
+		$NewCompanionship->save();
+
+		$WardCompanionshipMembers = WardCompanionshipMembers::where('companionship_id', '=', $Companionship->id)->get();
+		$WardCompanionshipMembers->each(function($WardCompanionshipMember) use($NewCompanionship) {
+			$NewWardCompanionshipMember = $WardCompanionshipMember->replicate();
+			$NewWardCompanionshipMember->companionship_id = $NewCompanionship->id;
+			$NewWardCompanionshipMember->save();
+		});
+
+		$Companionship->delete();
+
+		return Redirect::back()->with('status', 'Companionship updated.');
 	}
 
 	public function postDelete(Request $Request) {
 		$id = Input::get('id');
-		WardCompanions::destroy($id);
+		Companionship::destroy($id);
 		WardCompanionshipMembers::where('companionship_id', '=', $id)->first()->delete();
 		$status = 'Companionship Removed.';
 		if ($Request->ajax()) {

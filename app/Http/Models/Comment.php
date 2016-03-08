@@ -2,10 +2,14 @@
 
 namespace App\Http\Models;
 
-use Eloquence\Database\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Comment extends Model {
+/**
+ * Class Comment
+ *
+ * @package App\Http\Models
+ */
+class Comment extends BaseModel {
 	use SoftDeletes;
 
 	/**
@@ -26,4 +30,22 @@ class Comment extends Model {
 	 * @var array
 	 */
 	protected $dates = ['deleted_at'];
+
+	/**
+	 * Companionship
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function companionship() {
+		return $this->belongsTo(Companionship::class);
+	}
+
+	/**
+	 * Family
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function family() {
+		return $this->belongsTo(Member::class, 'family_id');
+	}
 }

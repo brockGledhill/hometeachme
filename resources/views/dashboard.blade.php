@@ -6,7 +6,7 @@
 
 		<div id="commentbox">
 			<span id="commenttitle"></span>
-			<form id="commentformid" method="post" action="savecomment.php">
+			<form id="commentformid" method="post">
 				<textarea name="commenttextname" id="textcommentbox" placeholder="your comments..."></textarea>
 				<input style="display:none;" id="wardinput" name="wardinputname" type="text" />
 				<input style="display:none;" id="monthinput" name="monthname" type="text" />
@@ -70,17 +70,17 @@
 
 		<div style="display:none;" id="family{{ $myFamilies[$index]['family']['id'] }}">
 			@foreach ($myFamilies[$index]['comments'] as $comment)
-				<div id="fullcommentrow{{ $comment['id'] }}" class="famcommentrow">
+				<div id="fullcommentrow{{ $comment->id }}" class="famcommentrow">
 					<div class="commentcont">
-						<div class="commentmonth">{{ $comment['visit_month'] }} {{ $comment['visit_year'] }}</div>
-						<div>{{ $comment['comment_text'] }}</div>
+						<div class="commentmonth">{{ $comment->visitMonth }} {{ $comment->visitYear }}</div>
+						<div>{{ $comment->commentText }}</div>
 					</div>
-					<div style="display:none;" id="commentconfirm{{ $comment['id'] }}" class="delcommentbox">
+					<div style="display:none;" id="commentconfirm{{ $comment->id }}" class="delcommentbox">
 						<span class="delconftitle">Delete Comment?</span>
-						<a class="delconfbtn btn btn-primary" onclick="confdelete('{{ $comment['id'] }}');">Yes</a>
-						<a class="delconfbtn delright btn btn-danger" onclick="dontdelete('{{ $comment['id'] }}');">No</a>
+						<a class="delconfbtn btn btn-primary" onclick="confdelete('{{ $comment->id }}');">Yes</a>
+						<a class="delconfbtn delright btn btn-danger" onclick="dontdelete('{{ $comment->id }}');">No</a>
 					</div>
-					<a class="delcomment glyphicon glyphicon-remove" onclick="deletecomment('{{ $comment['id'] }}');"></a>
+					<a class="delcomment glyphicon glyphicon-remove" onclick="deletecomment('{{ $comment->id }}');"></a>
 				</div>
 			@endforeach
 		</div>

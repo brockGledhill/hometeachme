@@ -2,10 +2,9 @@
 
 namespace App\Http\Models;
 
-use Eloquence\Database\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Quorum extends Model {
+class Quorum extends BaseModel {
 	use SoftDeletes;
 
 	/**
