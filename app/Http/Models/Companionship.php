@@ -1,11 +1,15 @@
 <?php
 
-namespace App;
+namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class WardCompanions extends Model {
+/**
+ * Class Companionship
+ *
+ * @package App\Http\Models
+ */
+class Companionship extends BaseModel {
 	use SoftDeletes;
 
 	/**
@@ -14,7 +18,6 @@ class WardCompanions extends Model {
 	 * @var array
 	 */
 	protected $guarded = [
-		'id',
 		'created_at',
 		'updated_at'
 	];
