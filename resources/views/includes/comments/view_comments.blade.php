@@ -14,8 +14,12 @@
 					<td>{{ $comment->commentText }}</td>
 					<td>
 						@if (!empty($comment->companionship->htOne->id) || !empty($comment->companionship->htTwo->id))
-							{{ $comment->companionship->htOne->firstName }} {{ $comment->companionship->htOne->lastName }}<br />
-							{{ $comment->companionship->htTwo->firstName }} {{ $comment->companionship->htTwo->lastName }}
+							@if (!empty($comment->companionship->htOne->id))
+								{{ $comment->companionship->htOne->firstName }} {{ $comment->companionship->htOne->lastName }}<br />
+							@endif
+							@if (!empty($comment->companionship->htTwo->id))
+								{{ $comment->companionship->htTwo->firstName }} {{ $comment->companionship->htTwo->lastName }}
+							@endif
 						@else
 							Not Assigned
 						@endif

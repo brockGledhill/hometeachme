@@ -128,9 +128,7 @@ function savedacomment() {
 		data: {
 			'comment_text': $("#textcommentbox").val(),
 			'family_id': $("#familyinput").val(),
-			'member_id': $("#hometeacherinput").val(),
-			'companion_id': $("#companionshipinput").val(),
-			'ward_id': $("#wardinput").val(),
+			'companionship_id': $("#companionshipinput").val(),
 			'visit_month': $("#monthinput").val()
 		},
 		success: function(response) {

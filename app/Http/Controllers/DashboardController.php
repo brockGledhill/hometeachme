@@ -21,16 +21,16 @@ class DashboardController extends Controller {
 		$data['authId'] = $authUser->id;
 		$data['wardId'] = $authUser->ward_id;
 
-		$WardCompanion = Companionship::where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId'])->first();
+		$data['companionship'] = Companionship::where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId'])->first();
 
 		$data['allFamilies'] = [];
-		if (!empty($WardCompanion)) {
-			if ($WardCompanion->ht_one_id == $data['authId']) {
-				$data['companion'] = Member::find($WardCompanion->ht_two_id);
+		if (!empty($data['companionship'])) {
+			if ($data['companionship']->ht_one_id == $data['authId']) {
+				$data['companion'] = Member::find($data['companionship']->ht_two_id);
 			} else {
-				$data['companion'] = Member::find($WardCompanion->ht_one_id);
+				$data['companion'] = Member::find($data['companionship']->ht_one_id);
 			}
-			$data['allFamilies'] = WardCompanionshipMembers::where('companionship_id', '=', $WardCompanion->id)->get();
+			$data['allFamilies'] = WardCompanionshipMembers::where('companionship_id', '=', $data['companionship']->id)->get();
 		}
 		if (!empty($data['companion'])) {
 			$data['companionName'] = $data['companion']->first_name . ' ' . $data['companion']->last_name;

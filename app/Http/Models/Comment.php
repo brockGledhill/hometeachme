@@ -37,7 +37,7 @@ class Comment extends BaseModel {
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function companionship() {
-		return $this->belongsTo(Companionship::class);
+		return $this->belongsTo(Companionship::class)->withTrashed();
 	}
 
 	/**
