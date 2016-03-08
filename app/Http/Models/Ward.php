@@ -2,10 +2,9 @@
 
 namespace App\Http\Models;
 
-use Eloquence\Database\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Ward extends Model {
+class Ward extends BaseModel {
 	use SoftDeletes;
 
 	/**

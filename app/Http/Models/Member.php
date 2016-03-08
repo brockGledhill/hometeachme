@@ -2,7 +2,6 @@
 
 namespace App\Http\Models;
 
-use Eloquence\Database\Model;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -10,15 +9,16 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 
-class Member extends Model implements AuthenticatableContract, CanResetPasswordContract {
+class Member extends BaseModel implements AuthenticatableContract, CanResetPasswordContract {
 	use Authenticatable, CanResetPassword, SoftDeletes;
 
 	/**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */
 	protected $guarded = [
+		'id',
 		'is_assigned',
 		'quorum_id',
 		'ward_id',

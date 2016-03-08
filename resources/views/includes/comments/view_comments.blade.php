@@ -8,15 +8,14 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach ($comments as $key => $comment)
+			@foreach ($comments as $comment)
 				<tr>
-					<td>{{ $families[$key]->first_name }}@if ($families[$key]->spouse_name) & {{ $families[$key]->spouse_name }}@endif {{ $families[$key]->last_name }}</td>
-					<td>{{ $comment->comment_text }}</td>
+					<td>{{ $comment->family->firstName }}@if ($comment->family->spouse_name) & {{ $comment->family->spouse_name }}@endif {{ $comment->family->lastName }}</td>
+					<td>{{ $comment->commentText }}</td>
 					<td>
-						@if (!empty($homeTeachers[$key]))
-							@foreach ($homeTeachers[$key] as $homeTeacher)
-								{{ $homeTeacher->first_name }} {{ $homeTeacher->last_name }} <br />
-							@endforeach
+						@if (!empty($comment->companionship->htOne->id) || !empty($comment->companionship->htTwo->id))
+							{{ $comment->companionship->htOne->firstName }} {{ $comment->companionship->htOne->lastName }}<br />
+							{{ $comment->companionship->htTwo->firstName }} {{ $comment->companionship->htTwo->lastName }}
 						@else
 							Not Assigned
 						@endif

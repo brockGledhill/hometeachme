@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Comment;
-use App\WardCompanions;
+use App\Http\Models\Companionship;
 use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
@@ -37,18 +37,14 @@ class CommentsController extends Controller {
 			$month = $data['months'][$requestData['month']];
 			$monthAbbr = $data['monthsAbbr'][$requestData['month']];
 		}
-		$data['comments'] = Comment::where('ward_id', '=', $authUser->ward_id)
-										->where('visit_month', '=', $monthAbbr)
-										->where('visit_year', '=', $year)
-										->get();
-		foreach ($data['comments'] as $key => $comment) {
-			$data['families'][$key] = Member::where('id', '=', $comment->family_id)->first();
-			$companions = WardCompanions::where('id', '=', $comment->companion_id)->first();
-			if ($companions) {
-				$data['homeTeachers'][$key][1] = Member::where('id', '=', $companions->ht_one_id)->first();
-				$data['homeTeachers'][$key][2] = Member::where('id', '=', $companions->ht_two_id)->first();
-			}
-		}
+		$data['comments'] = Comment::with('companionship')
+			->with('family')
+			->with('companionship.htOne')
+			->with('companionship.htTwo')
+			->where('visit_month', '=', $monthAbbr)
+			->where('visit_year', '=', $year)
+			->get();
+
 		$data['firstYear'] = 2015;
 		$data['nowYear'] = $curYear;
 		$data['selectedYear'] = $year;

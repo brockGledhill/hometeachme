@@ -2,10 +2,9 @@
 
 namespace App\Http\Models;
 
-use Eloquence\Database\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class District extends Model {
+class District extends BaseModel {
 	use SoftDeletes;
 
 	/**
