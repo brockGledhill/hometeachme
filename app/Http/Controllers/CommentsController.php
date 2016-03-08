@@ -56,7 +56,7 @@ class CommentsController extends Controller {
 	}
 
 	public function postAdd(Request $Request) {
-		$WardComment = Comment::create(array_merge(Input::all(), ['visit_year' => date('Y'), 'ward_id' => Auth::user()->ward_id]));
+		$WardComment = Comment::create(array_merge(Input::all(), ['visit_year' => date('Y')]));
 		$returnData = [
 			'success' => true,
 			'message' => 'Comment Recorded!',
