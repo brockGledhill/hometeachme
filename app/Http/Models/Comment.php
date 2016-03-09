@@ -48,4 +48,13 @@ class Comment extends BaseModel {
 	public function family() {
 		return $this->belongsTo(Member::class, 'family_id');
 	}
+
+	/**
+	 * Member
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function member() {
+		return $this->belongsTo(Member::class)->withTrashed();
+	}
 }

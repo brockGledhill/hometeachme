@@ -2,8 +2,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Comment;
-use App\Http\Models\Companionship;
-use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
@@ -39,6 +37,7 @@ class CommentsController extends Controller {
 		}
 		$data['comments'] = Comment::with('companionship')
 			->with('family')
+			->with('member')
 			->with('companionship.htOne')
 			->with('companionship.htTwo')
 			->where('visit_month', '=', $monthAbbr)
@@ -56,7 +55,7 @@ class CommentsController extends Controller {
 	}
 
 	public function postAdd(Request $Request) {
-		$WardComment = Comment::create(array_merge(Input::all(), ['visit_year' => date('Y')]));
+		$WardComment = Comment::create(array_merge(Input::all(), ['visit_year' => date('Y'), 'member_id' => $Request->user()->id]));
 		$returnData = [
 			'success' => true,
 			'message' => 'Comment Recorded!',

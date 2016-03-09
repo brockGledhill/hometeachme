@@ -15,10 +15,22 @@
 					<td>
 						@if (!empty($comment->companionship->htOne->id) || !empty($comment->companionship->htTwo->id))
 							@if (!empty($comment->companionship->htOne->id))
+								@if ($comment->member->id == $comment->companionship->htOne->id)
+									<strong>
+								@endif
 								{{ $comment->companionship->htOne->firstName }} {{ $comment->companionship->htOne->lastName }}<br />
+								@if ($comment->member->id == $comment->companionship->htOne->id)
+									</strong>
+								@endif
 							@endif
 							@if (!empty($comment->companionship->htTwo->id))
+								@if ($comment->member->id == $comment->companionship->htTwo->id)
+									<strong>
+								@endif
 								{{ $comment->companionship->htTwo->firstName }} {{ $comment->companionship->htTwo->lastName }}
+								@if ($comment->member->id == $comment->companionship->htTwo->id)
+									</strong>
+								@endif
 							@endif
 						@else
 							Not Assigned

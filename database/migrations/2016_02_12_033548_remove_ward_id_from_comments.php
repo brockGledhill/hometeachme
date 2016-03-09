@@ -17,7 +17,7 @@ class RemoveWardIdFromComments extends Migration {
 			if (Schema::hasTable('comments')) {
 				if (!Schema::hasColumn('comments', 'companionship_id')) {
 					Schema::table('comments', function (Blueprint $table) {
-						$table->integer('companionship_id')->unsigned()->after('family_id');
+						$table->integer('companionship_id')->unsigned()->after('member_id');
 					});
 				}
 
@@ -53,7 +53,7 @@ class RemoveWardIdFromComments extends Migration {
 				}
 
 				Schema::table('comments', function(Blueprint $table) {
-					$table->dropColumn(['ward_id', 'member_id', 'companion_id']);
+					$table->dropColumn(['ward_id', 'companion_id']);
 				});
 			}
 		});
@@ -70,7 +70,6 @@ class RemoveWardIdFromComments extends Migration {
 				Schema::table('comments', function(Blueprint $table) {
 					$table->integer('ward_id')->unsigned()->after('family_id');
 					$table->integer('companion_id')->unsigned()->after('family_id');
-					$table->integer('member_id')->unsigned()->after('family_id');
 				});
 
 				DB::update('
