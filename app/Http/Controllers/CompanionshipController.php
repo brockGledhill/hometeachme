@@ -137,7 +137,7 @@ class CompanionshipController extends Controller {
 	public function postDelete(Request $Request) {
 		$id = Input::get('id');
 		Companionship::destroy($id);
-		WardCompanionshipMembers::where('companionship_id', '=', $id)->first()->delete();
+		WardCompanionshipMembers::where('companionship_id', '=', $id)->delete();
 		$status = 'Companionship Removed.';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);
