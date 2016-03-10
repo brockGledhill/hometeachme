@@ -45,7 +45,8 @@ class RemoveWardIdFromComments extends Migration {
 							'quorum_id' => $member->quorum_id,
 							'family_id' => $companionship->family_id,
 							'created_at' => $date,
-							'updated_at' => $date
+							'updated_at' => $date,
+							'deleted_at' => $date
 						]);
 						$companionship->id = DB::getPdo()->lastInsertId();
 					}
