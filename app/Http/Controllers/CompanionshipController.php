@@ -30,7 +30,7 @@ class CompanionshipController extends Controller {
 		}
 
 		$data['existingHomeTeachers'] = Companionship::select('companionships.*')
-			->join('members', 'companionships.ht_one_id', '=', 'members.id')
+			->leftJoin('members', 'companionships.ht_one_id', '=', 'members.id')
 			->where('companionships.ward_id', '=', $authUser->wardId)
 			->where('companionships.quorum_id', '=', $authUser->quorumId)
 			->orderBy('members.last_name', 'ASC')
