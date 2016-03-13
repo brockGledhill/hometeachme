@@ -1,7 +1,7 @@
 <?php
 namespace app\Http\Controllers;
 
-use App\WardCompanionshipMembers;
+use App\Http\Models\CompanionshipFamily;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 
@@ -11,12 +11,12 @@ class CompanionshipMemberController extends Controller {
 	}
 
 	public function postAdd() {
-		WardCompanionshipMembers::create(Input::all());
+		CompanionshipFamily::create(Input::all());
 		return Redirect::back()->with('status', 'Family Added!');
 	}
 
 	public function postDelete() {
-		WardCompanionshipMembers::destroy(Input::get('id'));
+		CompanionshipFamily::destroy(Input::get('id'));
 		return Redirect::back()->with('status', 'Family Removed.');
 	}
 }

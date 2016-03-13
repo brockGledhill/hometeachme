@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Models\Comment;
 use App\Http\Models\Companionship;
-use App\WardCompanionshipMembers;
+use App\Http\Models\CompanionshipFamily;
 use App\WardCompanionshipVisits;
 use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +30,7 @@ class DashboardController extends Controller {
 			} else {
 				$data['companion'] = Member::find($data['companionship']->ht_one_id);
 			}
-			$data['allFamilies'] = WardCompanionshipMembers::where('companionship_id', '=', $data['companionship']->id)->get();
+			$data['allFamilies'] = CompanionshipFamily::where('companionship_id', '=', $data['companionship']->id)->get();
 		}
 		if (!empty($data['companion'])) {
 			$data['companionName'] = $data['companion']->first_name . ' ' . $data['companion']->last_name;
@@ -73,7 +73,7 @@ class DashboardController extends Controller {
 			'Dec' => 'December'
 		];
 
-		$compMemberRow = WardCompanionshipMembers::where('member_id', '=', $data['authId'])->first();
+		$compMemberRow = CompanionshipFamily::where('member_id', '=', $data['authId'])->first();
 		$data['myHomeTeachers'] = [];
 		if ($compMemberRow) {
 			$compRow = Companionship::where('id', '=', $compMemberRow->companionship_id)->first();
@@ -90,9 +90,5 @@ class DashboardController extends Controller {
 
 		$data['year'] = date('Y');
 		return view('dashboard', $data);
-	}
-
-	public function postIndex() {
-		
 	}
 }
