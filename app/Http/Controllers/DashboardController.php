@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Comment;
 use App\Http\Models\Companionship;
 use App\Http\Models\CompanionshipFamily;
-use App\WardCompanionshipVisits;
+use App\Http\Models\CompanionshipVisit;
 use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,7 +44,7 @@ class DashboardController extends Controller {
 				$familyData = &$data['myFamilies'][$key];
 				$familyData['family'] = Member::find($family['member_id']);
 				$familyData['visitMonth'] = [];
-				$visits = WardCompanionshipVisits::where('member_id', '=', $family['member_id'])->where('visit_year', '=', date('Y'))->get();
+				$visits = CompanionshipVisit::where('member_id', '=', $family['member_id'])->where('visit_year', '=', date('Y'))->get();
 				foreach ($visits as $visit) {
 					$familyData['visitMonth'][] = $visit['visit_month'];
 				}
