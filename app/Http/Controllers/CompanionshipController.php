@@ -2,7 +2,7 @@
 namespace app\Http\Controllers;
 
 use App\Http\Models\Companionship;
-use App\WardCompanionshipMembers;
+use App\Http\Models\CompanionshipFamily;
 use App\Http\Models\District;
 use App\Http\Models\Member;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +40,7 @@ class CompanionshipController extends Controller {
 		$checkForUnassignedMembers = Member::where('ward_id', '=', $authUser->ward_id)->where('quorum_id', '=', $authUser->quorumId)->where('is_jr_comp', '=', false)->get();
 		$data['unassignedFamilies'] = [];
 		foreach ($checkForUnassignedMembers as $unassigned) {
-			$companionshipFamily = WardCompanionshipMembers::where('member_id', '=', $unassigned->id)->get();
+			$companionshipFamily = CompanionshipFamily::where('member_id', '=', $unassigned->id)->get();
 
 			// If family doesn't exist in the comps relationship table
 			if ($companionshipFamily->isEmpty()) {
@@ -95,10 +95,10 @@ class CompanionshipController extends Controller {
 	public function postAdd(Request $Request) {
 		$Companionship = Companionship::create(Input::except('member_id'));
 		foreach (Input::get('member_id') as $memberId) {
-			$WardCompanionshipMembers = new WardCompanionshipMembers();
-			$WardCompanionshipMembers->member_id = $memberId;
-			$WardCompanionshipMembers->companionship_id = $Companionship->id;
-			$WardCompanionshipMembers->save();
+			$CompanionshipFamily = new CompanionshipFamily();
+			$CompanionshipFamily->member_id = $memberId;
+			$CompanionshipFamily->companionship_id = $Companionship->id;
+			$CompanionshipFamily->save();
 		}
 		$status = 'Companionship Added With Families!';
 		if ($Request->ajax()) {
@@ -122,9 +122,9 @@ class CompanionshipController extends Controller {
 
 		$NewCompanionship->save();
 
-		$WardCompanionshipMembers = WardCompanionshipMembers::where('companionship_id', '=', $Companionship->id)->get();
-		$WardCompanionshipMembers->each(function($WardCompanionshipMember) use($NewCompanionship) {
-			$NewWardCompanionshipMember = $WardCompanionshipMember->replicate();
+		$CompanionshipFamilies = CompanionshipFamily::where('companionship_id', '=', $Companionship->id)->get();
+		$CompanionshipFamilies->each(function($CompanionshipFamily) use($NewCompanionship) {
+			$NewWardCompanionshipMember = $CompanionshipFamily->replicate();
 			$NewWardCompanionshipMember->companionship_id = $NewCompanionship->id;
 			$NewWardCompanionshipMember->save();
 		});
@@ -137,7 +137,7 @@ class CompanionshipController extends Controller {
 	public function postDelete(Request $Request) {
 		$id = Input::get('id');
 		Companionship::destroy($id);
-		WardCompanionshipMembers::where('companionship_id', '=', $id)->delete();
+		CompanionshipFamily::where('companionship_id', '=', $id)->delete();
 		$status = 'Companionship Removed.';
 		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => $status]);
@@ -150,7 +150,7 @@ class CompanionshipController extends Controller {
 		foreach ($existingHomeTeachers as $key => $homeTeachers) {
 			$existingHomeTeacherCompanion[$key]['homeTeacher'][1] =  Member::find($homeTeachers->ht_one_id);
 			$existingHomeTeacherCompanion[$key]['homeTeacher'][2] = Member::find($homeTeachers->ht_two_id);
-			$families =  WardCompanionshipMembers::where('companionship_id', '=', $homeTeachers->id)->get();
+			$families =  CompanionshipFamily::where('companionship_id', '=', $homeTeachers->id)->get();
 			$existingHomeTeacherCompanion[$key]['families'] = [];
 			foreach ($families as $family) {
 				$taughtFamily = &$existingHomeTeacherCompanion[$key]['families'][];

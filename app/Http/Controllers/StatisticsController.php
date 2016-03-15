@@ -1,7 +1,7 @@
 <?php
 namespace app\Http\Controllers;
 
-use App\WardCompanionshipVisits;
+use App\Http\Models\CompanionshipVisit;
 use App\Http\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +31,7 @@ class StatisticsController extends Controller {
 		$data['firstYear'] = 2015;
 		$data['nowYear'] = $curYear;
 		$data['selectedYear'] = $year;
-		$data['visitMonths'] = WardCompanionshipVisits::where('ward_id', '=', $authUser->ward_id)
+		$data['visitMonths'] = CompanionshipVisit::where('ward_id', '=', $authUser->ward_id)
 			->select(DB::raw("*, COUNT(*) AS count, FIELD(visit_month,'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec') AS month_order"))
 			->where('quorum_id', '=', $authUser->quorum_id)
 			->where('visit_year', '=', $data['selectedYear'])
@@ -41,7 +41,7 @@ class StatisticsController extends Controller {
 			->get();
 		$data['members'] = [];
 		foreach ($data['visitMonths'] as $month) {
-			$Families = WardCompanionshipVisits::where('visit_month', '=', $month['visit_month'])
+			$Families = CompanionshipVisit::where('visit_month', '=', $month['visit_month'])
 				->where('ward_id', '=', $authUser->ward_id)
 				->where('quorum_id', '=', $authUser->quorum_id)
 				->where('visit_year', '=', $data['selectedYear'])

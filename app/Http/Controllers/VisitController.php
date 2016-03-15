@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\WardCompanionshipVisits;
+use App\Http\Models\CompanionshipVisit;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -14,15 +14,15 @@ class VisitController extends Controller {
 
 	public function postAdd() {
 		$AuthUser = Auth::user();
-		$WardCompanionshipVisit = WardCompanionshipVisits::withTrashed()->where(Input::get())->first() ?: new WardCompanionshipVisits(Input::get());
-		$WardCompanionshipVisit->ward_id = $AuthUser->ward_id;
-		$WardCompanionshipVisit->quorum_id = $AuthUser->quorum_id;
-		$WardCompanionshipVisit->visit_year = date('Y');
-		$WardCompanionshipVisit->save();
+		$CompanionshipVisit = CompanionshipVisit::withTrashed()->where(Input::get())->first() ?: new CompanionshipVisit(Input::get());
+		$CompanionshipVisit->ward_id = $AuthUser->ward_id;
+		$CompanionshipVisit->quorum_id = $AuthUser->quorum_id;
+		$CompanionshipVisit->visit_year = date('Y');
+		$CompanionshipVisit->save();
 
 		//If soft deleted, restore.
-		if ($WardCompanionshipVisit->trashed()) {
-			$WardCompanionshipVisit->restore();
+		if ($CompanionshipVisit->trashed()) {
+			$CompanionshipVisit->restore();
 		}
 
 		if (Request::ajax()) {
@@ -32,8 +32,8 @@ class VisitController extends Controller {
 	}
 
 	public function postDelete() {
-		$WardCompanionshipVisit = WardCompanionshipVisits::where(Input::get())->first();
-		$WardCompanionshipVisit->delete();
+		$CompanionshipVisit = CompanionshipVisit::where(Input::get())->first();
+		$CompanionshipVisit->delete();
 
 		if (Request::ajax()) {
 			return Response::json(['success' => true, 'status' => 'Visit Removed']);

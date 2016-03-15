@@ -1,11 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class WardCompanionshipMembers extends Model {
+class CompanionshipFamily extends BaseModel {
 	use SoftDeletes;
 
 	/**
