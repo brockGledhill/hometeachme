@@ -21,7 +21,7 @@ class PullRequestController extends Controller {
 	 */
 	public function postPullRequest(Request $Request) {
 		$request = $Request->all();
-		if (App::environment() === 'qa' && $request['action'] === 'closed' && $request['pull_request']['merged'] === true && $request['pull_request']['base']['ref'] === 'master') {
+		if (App::environment() === 'qa' && $request['action'] === 'closed' && $request['pull_request']['merged'] === true && $request['pull_request']['base']['ref'] === 'qa') {
 			exec('cd /var/www/qa.hometeachme.org/ && git pull');
 		}
 		return new Response('pull request received!', 200);
