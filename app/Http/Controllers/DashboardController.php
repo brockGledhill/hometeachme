@@ -41,14 +41,23 @@ class DashboardController extends Controller {
 		$data['totalVisitCount'] = 0;
 		if ($data['numFamilies'] > 0) {
 			foreach ($data['allFamilies'] as $key => $family) {
+				$count = 0;
 				$familyData = &$data['myFamilies'][$key];
 				$familyData['family'] = Member::find($family['member_id']);
 				$familyData['visitMonth'] = [];
+				$familyData['visitMonthYes'] = [];
+				$familyData['visitMonthNo'] = [];
 				$visits = CompanionshipVisit::where('member_id', '=', $family['member_id'])->where('visit_year', '=', date('Y'))->get();
 				foreach ($visits as $visit) {
-					$familyData['visitMonth'][] = $visit['visit_month'];
+					$familyData['visitMonth'][] = $visit->visitMonth;
+					if ($visit->visited === 'yes') {
+						$familyData['visitMonthYes'][] = $visit->visitMonth;
+						++$count;
+					} else {
+						$familyData['visitMonthNo'][] = $visit->visitMonth;
+					}
 				}
-				$familyData['visitCount'] = count($visits);
+				$familyData['visitCount'] = $count;
 				$data['totalVisitCount'] += $familyData['visitCount'];
 				$familyData['comments'] = Comment::whereHas('companionship', function($query) use ($data) {
 						$query->where('ht_one_id', '=', $data['authId'])->orWhere('ht_two_id', '=', $data['authId']);

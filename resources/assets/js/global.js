@@ -59,48 +59,54 @@ function showthemonths(familyname){
 	$("#hiddenmonths" + familyname).toggle("slow");
 }
 
-runningvisitupdate = false;
-function checkvisit(houseid, vmonth, currentitem, housename) {
-	var themonthstring = $("#" + currentitem + " span").html();
-	$("#" + currentitem + " span").html('updating...');
-	var visnum = Number(document.getElementById("displayvisitnum" + houseid).innerHTML);
-	var url = '';
-	var success;
-	if ($("#" + currentitem + " a").hasClass("glyphicon-ok-sign")) {
-		--visnum;
-		url = '/visit/delete';
+function checkVisitYes(houseid, vmonth, currentitem, housename) {
+	checkvisit(houseid, vmonth, currentitem, housename, 'yes');
+}
 
-		success = function (data, status) {
-			$("#" + currentitem + " a").removeClass('glyphicon-ok-sign').addClass("glyphicon-unchecked");
-			$("#" + currentitem + " a").parent().find('.monthlabel').removeClass('home-taught-month');
-			$("#" + currentitem).parent().children(".commentbutton").hide();
-			$("#displayvisitnum" + houseid).html(visnum);
-			$("#" + currentitem + " span").html(themonthstring);
-			runningvisitupdate = false;
-		};
+function checkVisitNo(houseid, vmonth, currentitem, housename) {
+	checkvisit(houseid, vmonth, currentitem, housename, 'no');
+}
+
+var runningvisitupdate = false;
+function checkvisit(houseid, vmonth, currentitem, housename, yesNo) {
+	var $curItem = $("#" + currentitem);
+	var yesnostring = $("#" + currentitem + " span").html();
+	var $curItemSpan = $curItem.find("span");
+	$curItemSpan.html('updating...');
+	var visnum = Number(document.getElementById("displayvisitnum" + houseid).innerHTML);
+	var other = '';
+	if ($curItem.hasClass("js-dashboard-report-no")) {
+		other = '.js-dashboard-report-yes';
+		if ($curItem.hasClass('glyphicon-ok-sign') || $curItem.closest('.monthitem').find(other).hasClass('glyphicon-ok-sign')) {
+			--visnum;
+		}
 	} else {
 		++visnum;
-		url = '/visit/add';
-		success = function(data, status) {
-			$("#" + currentitem + " a").removeClass('glyphicon-unchecked').addClass("glyphicon-ok-sign");
-			$("#" + currentitem + " a").parent().find('.monthlabel').addClass('home-taught-month');
-			$("#" + currentitem).parent().children(".commentbutton").show();
-			$("#displayvisitnum" + houseid).html(visnum);
-			$("#" + currentitem + " span").html(themonthstring);
-			runningvisitupdate = false;
-		};
+		other = '.js-dashboard-report-no';
 	}
 	if (!runningvisitupdate) {
 		runningvisitupdate = true;
 		$.ajax({
-			url: url,
+			url: '/visit/add',
 			type: 'post',
 			data: {
 				'member_id': houseid,
 				'visit_month': vmonth,
-				'comp_id': housename
+				'comp_id': housename,
+				'visited': yesNo
 			},
-			success: success
+			success: function (data, status) {
+				$curItem.removeClass('glyphicon-unchecked').addClass("glyphicon-ok-sign");
+				$curItem.closest('.visitclickitem').find('.monthlabel').addClass('home-taught-month');
+				$curItem.closest('.monthitem').find(".commentbutton").show();
+				$curItem.closest('.monthitem').find(other).removeClass('glyphicon-ok-sign').addClass("glyphicon-unchecked");
+				$("#displayvisitnum" + houseid).html(visnum);
+				$curItemSpan.html(yesnostring);
+				runningvisitupdate = false;
+			},
+			error: function() {
+				runningvisitupdate = false;
+			}
 		}); // end ajax call
 	}
 }

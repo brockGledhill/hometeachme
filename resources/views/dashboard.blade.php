@@ -49,13 +49,27 @@
 
 			@foreach ($months as $abbr => $month)
 				<div class="monthitem">
-					<div class="visitclickitem" onclick="checkvisit('{{ $myFamilies[$index]['family']['id'] }}' , '{{ $abbr }}' , this.id, '{{ $companion['id'] or '' }}');"  id="{{ $abbr }}-{{ $myFamilies[$index]['family']['last_name'] }}">
-						<a class="visiticon glyphicon
-							@if (in_array($abbr, $myFamilies[$index]['visitMonth']))
+					<div class="visitclickitem">
+						<a class="visiticon glyphicon js-dashboard-report-yes
+							@if (in_array($abbr, $myFamilies[$index]['visitMonthYes']))
 								glyphicon-ok-sign
 							@else
 								glyphicon-unchecked
-							@endif"></a>
+							@endif"
+						onclick="checkVisitYes('{{ $myFamilies[$index]['family']['id'] }}' , '{{ $abbr }}' , this.id, '{{ $companion['id'] or '' }}');"  id="{{ $abbr }}-{{ $myFamilies[$index]['family']['last_name'] }}-yes">
+							<span class="Dashboard__reporting">Yes</span>
+						</a>
+
+						<a class="visiticon glyphicon js-dashboard-report-no
+							@if (in_array($abbr, $myFamilies[$index]['visitMonthNo']))
+								glyphicon-ok-sign
+							@else
+								glyphicon-unchecked
+							@endif"
+						onclick="checkVisitNo('{{ $myFamilies[$index]['family']['id'] }}' , '{{ $abbr }}' , this.id, '{{ $companion['id'] or '' }}');"  id="{{ $abbr }}-{{ $myFamilies[$index]['family']['last_name'] }}-no">
+							<span class="Dashboard__reporting">No</span>
+						</a>
+
 						<span class="monthlabel @if (in_array($abbr, $myFamilies[$index]['visitMonth'])) home-taught-month @endif">{{ $month }}</span>
 					</div>
 					<a class="commentbutton
