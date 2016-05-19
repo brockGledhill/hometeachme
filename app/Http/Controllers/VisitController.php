@@ -2,22 +2,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\CompanionshipVisit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Request;
 
 class VisitController extends Controller {
 	public function __construct() {
 		$this->middleware('auth');
 	}
 
-	public function postAdd() {
-		$AuthUser = Auth::user();
-		$CompanionshipVisit = CompanionshipVisit::withTrashed()->where(Input::get())->first() ?: new CompanionshipVisit(Input::get());
-		$CompanionshipVisit->ward_id = $AuthUser->ward_id;
-		$CompanionshipVisit->quorum_id = $AuthUser->quorum_id;
-		$CompanionshipVisit->visit_year = date('Y');
+	public function postAdd(Request $Request) {
+		$AuthUser = $Request->user();
+		$CompanionshipVisit = CompanionshipVisit::withTrashed()->where($Request->except(['visited']))->first() ?: new CompanionshipVisit($Request->all());
+		$CompanionshipVisit->wardId = $AuthUser->wardId;
+		$CompanionshipVisit->quorumId = $AuthUser->quorumId;
+		$CompanionshipVisit->visitYear = date('Y');
+		$CompanionshipVisit->visited = $Request->get('visited');
 		$CompanionshipVisit->save();
 
 		//If soft deleted, restore.
@@ -25,7 +26,7 @@ class VisitController extends Controller {
 			$CompanionshipVisit->restore();
 		}
 
-		if (Request::ajax()) {
+		if ($Request->ajax()) {
 			return Response::json(['success' => true, 'status' => 'Visit Recorded!']);
 		}
 		return Redirect::back()->with('status', 'Visit Recorded!');
