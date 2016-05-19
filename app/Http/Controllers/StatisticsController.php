@@ -35,6 +35,7 @@ class StatisticsController extends Controller {
 			->select(DB::raw("*, COUNT(*) AS count, FIELD(visit_month,'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec') AS month_order"))
 			->where('quorum_id', '=', $authUser->quorum_id)
 			->where('visit_year', '=', $data['selectedYear'])
+			->where('visited', '=', 'yes')
 			->groupBy('visit_month')
 			->having('count', '>', 0)
 			->orderBy("month_order")
@@ -45,9 +46,17 @@ class StatisticsController extends Controller {
 				->where('ward_id', '=', $authUser->ward_id)
 				->where('quorum_id', '=', $authUser->quorum_id)
 				->where('visit_year', '=', $data['selectedYear'])
+				->where('visited', '=', 'yes')
 				->get();
 			foreach ($Families as $Family) {
 				$data['members'][$month['visit_month']][] = Member::find($Family->member_id);
+			}
+
+			if (!empty($data['members'][$month['visit_month']])) {
+				usort($data['members'][$month['visit_month']], function($one, $two) {
+					//Compare by last name first followed by first name.
+					return strcmp($one->lastName . $one->firstName, $two->lastName . $two->firstName);
+				});
 			}
 		}
 
