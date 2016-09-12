@@ -3,6 +3,7 @@ namespace app\Http\Controllers;
 
 use App\Http\Models\CompanionshipVisit;
 use App\Http\Models\Member;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -49,7 +50,11 @@ class StatisticsController extends Controller {
 				->where('visited', '=', 'yes')
 				->get();
 			foreach ($Families as $Family) {
-				$data['members'][$month['visit_month']][] = Member::find($Family->member_id);
+				try {
+					$data['members'][$month['visit_month']][] = Member::withTrashed()->findOrFail($Family->member_id);
+				} catch (Exception $exception) {
+					continue;
+				}
 			}
 
 			if (!empty($data['members'][$month['visit_month']])) {
